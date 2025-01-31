@@ -2,12 +2,13 @@
 local m = {}
 
 ---@return boolean
----@param executableName string
-function m._checkInPath(executableName)
-	if
-		vim.fn.executable(executableName) == 1
-		or vim.uv.fs_stat(vim.fn.stdpath("data") .. "/mason/bin/" .. executableName)
-	then
+---@param packageName string
+---@param executableName string?
+function m._checkInPath(packageName, executableName)
+	if executableName == nil then
+		executableName = packageName
+	end
+	if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) then
 		return true
 	end
 	return false
