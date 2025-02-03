@@ -34,7 +34,7 @@ doesn't, it tries to use mason as fallback
             "yaml-language-server",
             --lsp
             --dap
-            "codelldb",
+            { name = "codelldb", mason = true},
             "debugpy",
             --dap
             --formatter
