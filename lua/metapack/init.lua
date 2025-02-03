@@ -15,6 +15,27 @@ function m._checkInPath(packageName, executableName) -- {{{
     return false -- }}}
 end -- }}}
 
+function m._checkPackageExistInGentooRepos(name)
+    if
+        vim.system({
+            "emerge",
+            "--ask",
+            "n",
+            "--pretend",
+            "--oneshot",
+            "--nodeps",
+            "--verbose",
+            "n",
+            "--color",
+            "n",
+            name,
+        })
+            :wait().code == 0
+    then
+        return true
+    else
+        return false
+    end
 end
 
 ---@param packagesData table
@@ -36,24 +57,7 @@ function m.ensure_installed(packagesData, doas)
         if type(packagesData[i]) == "string" then
             if m._checkInPath(packagesData[i]) == false then
                 print("searching for " .. packagesData[i])
-                if
-                    string.find(osData.release, "gentoo")
-                    and vim.system({
-                            "emerge",
-                            "--ask",
-                            "n",
-                            "--pretend",
-                            "--oneshot",
-                            "--nodeps",
-                            "--verbose",
-                            "n",
-                            "--color",
-                            "n",
-                            packagesData[i],
-                        })
-                            :wait().code
-                        == 0
-                then
+                if string.find(osData.release, "gentoo") and m._checkPackageExistInGentooRepos(packagesData[i]) then
                     table.insert(portagePackages, packagesData[i])
                 else
                     table.insert(masonPackages, packagesData[i])
