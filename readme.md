@@ -34,7 +34,7 @@ doesn't, it tries to use mason as fallback
             "yaml-language-server",
             --lsp
             --dap
-            { name = "codelldb", mason = true},
+            { name = "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
             "debugpy",
             --dap
             --formatter
