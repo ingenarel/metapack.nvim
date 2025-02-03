@@ -25,7 +25,7 @@ function m.ensure_installed(packagesData, doas)
     -- end
 
     ---@type table
-    local emergePackages = {}
+    local portagePackages = {}
     ---@type table
     local masonPackages = {}
 
@@ -51,7 +51,7 @@ function m.ensure_installed(packagesData, doas)
                             :wait().code
                         == 0
                 then
-                    table.insert(emergePackages, packagesData[i])
+                    table.insert(portagePackages, packagesData[i])
                 else
                     table.insert(masonPackages, packagesData[i])
                 end
@@ -60,16 +60,16 @@ function m.ensure_installed(packagesData, doas)
     end
 
     ---@type string
-    local emergeCommand = ""
-    if #emergePackages > 0 then
+    local portageCommand = ""
+    if #portagePackages > 0 then
         if doas == true then
-            emergeCommand = emergeCommand .. "doas"
+            portageCommand = portageCommand .. "doas"
         else
-            emergeCommand = emergeCommand .. "sudo"
+            portageCommand = portageCommand .. "sudo"
         end
-        emergeCommand = emergeCommand .. " emerge --ask y --verbose --color y --quiet-build y"
-        for i = 1, #emergePackages do
-            emergeCommand = emergeCommand .. " " .. emergePackages[i]
+        portageCommand = portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
+        for i = 1, #portagePackages do
+            portageCommand = portageCommand .. " " .. portagePackages[i]
         end
     end
 
@@ -82,8 +82,8 @@ function m.ensure_installed(packagesData, doas)
         vim.cmd("MasonInstall" .. masonCommand)
     end
 
-    if #emergeCommand > 0 then
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. emergeCommand)
+    if #portageCommand > 0 then
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. portageCommand)
     end
 end
 
