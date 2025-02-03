@@ -49,6 +49,25 @@ doesn't, it tries to use mason as fallback
 ```
 </details>
 
+### tips:
+
+<details>
+    <summary> using doas </summary>
+
+metapack works with sudo when trying to interact with your package
+manager. but it can also use doas.
+
+```lua
+require("metapack").ensure_installed(
+    {
+        --packages
+    }
+    true
+)
+```
+
+</details>
+
 ### current package manager support:
 - [  portage](https://wiki.gentoo.org/wiki/Portage)
 - [  mason](https://github.com/williamboman/mason.nvim)
