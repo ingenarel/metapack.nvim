@@ -25,9 +25,9 @@ doesn't, it tries to use mason as fallback
     config = function()
         require("metapack").ensure_installed {
             --lsp
-            "pyright",
+            "pyright", -- package could be string for simple use
             "clangd",
-            "lua-language-server",
+            { name = "lua-language-server", portage = true, os = "gentoo" } -- or it could be a table specifying stuff,
             "bash-language-server",
             "termux-language-server",
             "ltex-ls",
@@ -94,14 +94,14 @@ require("metapack").ensure_installed(
     <summary> implement these features </summary>
 
 - specifying:
-    - [ ] package manager
     - [ ] version
     - [ ] commit hash
-    - [ ] operating system / Linux distro
+    - [x] ~operating system / Linux distro~
+    - [x] ~package manager~
 
 - features:
     - [ ] work with gentoo USE flags
-        some stuff in gentoo, like codelldb and clang-format, are not seperate
+        some stuff in gentoo, like codelldb and clang-format, are not separate
         packages, but instead they are USE flags in the clang package
 
 </details>
