@@ -69,6 +69,15 @@ function m.ensure_installed(packagesData, doas)
                 end
             end
         end
+        if type(packagesData[i]) == "table" then
+            if string.find(osData.release, packagesData[i].os) then
+                if packagesData[i].portage then
+                    table.insert(portagePackages, packagesData[i].name)
+                if packagesData[i].mason then
+                    table.insert(masonPackages, packagesData[i].name)
+                end
+            end
+        end
     end
 
     ---@type string
