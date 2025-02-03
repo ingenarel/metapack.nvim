@@ -71,7 +71,7 @@ function m.ensure_installed(packagesData, doas)
         end
         if type(packagesData[i]) == "table" then
             if m._checkInPath(packagesData[i].name) == false then
-                if string.find(osData.release, packagesData[i].os) then
+                if packagesData[i].os == nil or string.find(osData.release, packagesData[i].os) then
                     if packagesData[i].portage then
                         table.insert(portagePackages, packagesData[i].name)
                     end
