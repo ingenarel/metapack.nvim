@@ -1,17 +1,20 @@
 ---@type table
 local m = {}
 
+---function m._checkInPath(packageName, executableName)-- {{{
 ---@return boolean
 ---@param packageName string
 ---@param executableName string?
-function m._checkInPath(packageName, executableName)
+function m._checkInPath(packageName, executableName) -- {{{
     if executableName == nil then
         executableName = packageName
     end
     if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) then
         return true
     end
-    return false
+    return false -- }}}
+end -- }}}
+
 end
 
 ---@param packagesData table
