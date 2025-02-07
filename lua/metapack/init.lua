@@ -21,7 +21,7 @@ end -- }}}
 ---@return boolean}}}
 function m._checkPackageExistInRepos(packageName, packageManager)
     local commands = {
-        emerge = function() -- {{{
+        portage = function() -- {{{
             if
                 vim.system({
                     "emerge",
@@ -85,7 +85,9 @@ function m.ensure_installed(packagesData, doas)
         if type(packagesData[i]) == "string" then -- {{{
             if m._checkInPath(packagesData[i]) == false then
                 vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
-                if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "emerge") then
+                if
+                    string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "portage")
+                then
                     table.insert(m._portagePackages, packagesData[i])
                 elseif
                     string.find(osData.release, "arch") and m._checkPackageExistInRepos(packagesData[i], "pacman")
