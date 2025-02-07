@@ -15,28 +15,43 @@ function m._checkInPath(packageName, executableName) -- {{{
     return false -- }}}
 end -- }}}
 
-function m._checkPackageExistInGentooRepos(name)
-    if
-        vim.system({
-            "emerge",
-            "--ask",
-            "n",
-            "--pretend",
-            "--oneshot",
-            "--nodeps",
-            "--verbose",
-            "n",
-            "--color",
-            "n",
-            name,
-        })
-            :wait().code == 0
-    then
-        return true
+-- function m._checkPackageExistInRepos(packageName, packageManager){{{
+---@param packageName string{{{
+---@param packageManager string
+---@return boolean}}}
+function m._checkPackageExistInRepos(packageName, packageManager)
+    local commands = {
+        emerge = function() -- {{{
+            if
+                vim.system({
+                    "emerge",
+                    "--ask",
+                    "n",
+                    "--pretend",
+                    "--oneshot",
+                    "--nodeps",
+                    "--verbose",
+                    "n",
+                    "--color",
+                    "n",
+                    packageName,
+                })
+                    :wait().code == 0
+            then
+                return true
+            else
+                return false
+            end
+        end, -- }}}
+    }
+
+    if commands[packageManager] then
+        return commands[packageManager]()
     else
         return false
     end
 end
+end -- }}}
 
 ---@param packagesData table
 ---@param doas boolean?
