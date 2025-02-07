@@ -170,11 +170,7 @@ function m.ensure_installed(packagesData, doas)
 
     if #m._aurPackages > 0 then
         ---@type string
-        m._aurCommand = "sudo " .. m._aurHelper
-
-        if doas == true then
-            m._aurCommand = "doas " .. m._aurHelper
-        end
+        m._aurCommand = m._aurHelper
 
         for i = 1, #m._aurPackages do
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
