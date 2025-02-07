@@ -71,14 +71,14 @@ function m.ensure_installed(packagesData, doas)
     ---@type table
     local osData = vim.uv.os_uname()
     ---@type table
-    local portagePackages = {}
+    m._portagePackages = {}
     ---@type table
-    local masonPackages = {}
+    m._masonPackages = {}
     ---@type table
-    local pacmanPackages = {}
+    m._pacmanPackages = {}
 
     ---@type string
-    local masonCommand = ""
+    m._masonCommand = ""
     -- }}}
 
     for i = 1, #packagesData do -- {{{
@@ -86,13 +86,13 @@ function m.ensure_installed(packagesData, doas)
             if m._checkInPath(packagesData[i]) == false then
                 vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
                 if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "emerge") then
-                    table.insert(portagePackages, packagesData[i])
+                    table.insert(m._portagePackages, packagesData[i])
                 elseif
                     string.find(osData.release, "arch") and m._checkPackageExistInRepos(packagesData[i], "pacman")
                 then
-                    table.insert(pacmanPackages, packagesData[i])
+                    table.insert(m._pacmanPackages, packagesData[i])
                 elseif require("mason-registry").has_package(packagesData[i]) then
-                    table.insert(masonPackages, packagesData[i])
+                    table.insert(m._masonPackages, packagesData[i])
                 else
                     vim.notify(
                         "Can't find " .. packagesData[i] .. " on any known package database!",
@@ -105,56 +105,56 @@ function m.ensure_installed(packagesData, doas)
             if m._checkInPath(packagesData[i].name) == false then
                 if packagesData[i].os == nil or string.find(osData.release, packagesData[i].os) then
                     if packagesData[i].portage then
-                        table.insert(portagePackages, packagesData[i].name)
+                        table.insert(m._portagePackages, packagesData[i].name)
                     end
                     if packagesData[i].mason then
-                        table.insert(masonPackages, packagesData[i].name)
+                        table.insert(m._masonPackages, packagesData[i].name)
                     end
                     if packagesData[i].pacman then
-                        table.insert(pacmanPackages, packagesData[i].name)
+                        table.insert(m._pacmanPackages, packagesData[i].name)
                     end
                 end
             end
         end -- }}}
     end -- }}}
 
-    if #portagePackages > 0 then -- {{{
+    if #m._portagePackages > 0 then -- {{{
         ---@type string
-        local portageCommand = "sudo"
+        m._portageCommand = "sudo"
 
         if doas == true then
-            portageCommand = "doas"
+            m._portageCommand = "doas"
         end
 
-        portageCommand = portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
+        m._portageCommand = m._portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
 
-        for i = 1, #portagePackages do
-            portageCommand = portageCommand .. portagePackages[i]
+        for i = 1, #m._portagePackages do
+            m._portageCommand = m._portageCommand .. m._portagePackages[i]
         end
 
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. portageCommand)
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._portageCommand)
     end -- }}}
 
-    if #pacmanPackages > 0 then
+    if #m._pacmanPackages > 0 then
         ---@type string
-        local pacmanCommand = "sudo"
+        m._pacmanCommand = "sudo"
 
         if doas == true then
-            pacmanCommand = "doas"
+            m._pacmanCommand = "doas"
         end
 
-        for i = 1, #pacmanPackages do
-            pacmanCommand = pacmanCommand .. " pacman -S " .. pacmanPackages[i]
+        for i = 1, #m._pacmanPackages do
+            m._pacmanCommand = m._pacmanCommand .. " pacman -S " .. m._pacmanPackages[i]
         end
 
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. pacmanCommand)
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._pacmanCommand)
     end
 
-    if #masonPackages > 0 then -- {{{
-        for i = 1, #masonPackages do
-            masonCommand = masonCommand .. " " .. masonPackages[i]
+    if #m._masonPackages > 0 then -- {{{
+        for i = 1, #m._masonPackages do
+            m._masonCommand = m._masonCommand .. " " .. m._masonPackages[i]
         end
-        vim.cmd("MasonInstall" .. masonCommand)
+        vim.cmd("MasonInstall" .. m._masonCommand)
     end -- }}}
 end
 
