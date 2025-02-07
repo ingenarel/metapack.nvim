@@ -71,6 +71,7 @@ require("metapack").ensure_installed(
 ### current package manager support:
 - [  portage](https://wiki.gentoo.org/wiki/Portage)
 - [  mason](https://github.com/williamboman/mason.nvim)
+- [󰣇  pacman](https://wiki.archlinux.org/title/Pacman)
 
 ### GOALS:
 <details>
