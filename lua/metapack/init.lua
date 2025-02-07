@@ -78,8 +78,8 @@ function m.ensure_installed(packagesData, doas)
     for i = 1, #packagesData do
         if type(packagesData[i]) == "string" then
             if m._checkInPath(packagesData[i]) == false then
-                print("searching for " .. packagesData[i])
                 if string.find(osData.release, "gentoo") and m._checkPackageExistInGentooRepos(packagesData[i]) then
+                vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
                     table.insert(portagePackages, packagesData[i])
                 elseif require("mason-registry").has_package(packagesData[i]) then
                     table.insert(masonPackages, packagesData[i])
