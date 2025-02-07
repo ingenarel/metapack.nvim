@@ -63,23 +63,27 @@ end -- }}}
 ---@param packagesData table
 ---@param doas boolean?
 function m.ensure_installed(packagesData, doas)
+    -- NOTE: use this after i try to implement windows and mac{{{
+    -- if osData.sysname == "Linux" then
+    -- end}}}
+
+    --variables{{{
     ---@type table
     local osData = vim.uv.os_uname()
-
-    -- NOTE: use this after i try to implement windows and mac
-    -- if osData.sysname == "Linux" then
-    -- end
-
     ---@type table
     local portagePackages = {}
     ---@type table
     local masonPackages = {}
 
-    for i = 1, #packagesData do
-        if type(packagesData[i]) == "string" then
+    ---@type string
+    local masonCommand = ""
+    -- }}}
+
+    for i = 1, #packagesData do -- {{{
+        if type(packagesData[i]) == "string" then -- {{{
             if m._checkInPath(packagesData[i]) == false then
-                if string.find(osData.release, "gentoo") and m._checkPackageExistInGentooRepos(packagesData[i]) then
                 vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
+                if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "emerge") then
                     table.insert(portagePackages, packagesData[i])
                 elseif require("mason-registry").has_package(packagesData[i]) then
                     table.insert(masonPackages, packagesData[i])
@@ -90,8 +94,8 @@ function m.ensure_installed(packagesData, doas)
                     )
                 end
             end
-        end
-        if type(packagesData[i]) == "table" then
+        end -- }}}
+        if type(packagesData[i]) == "table" then -- {{{
             if m._checkInPath(packagesData[i].name) == false then
                 if packagesData[i].os == nil or string.find(osData.release, packagesData[i].os) then
                     if packagesData[i].portage then
@@ -102,35 +106,34 @@ function m.ensure_installed(packagesData, doas)
                     end
                 end
             end
-        end
-    end
+        end -- }}}
+    end -- }}}
 
-    ---@type string
-    local portageCommand = ""
-    if #portagePackages > 0 then
+    if #portagePackages > 0 then -- {{{
+        ---@type string
+        local portageCommand = "sudo"
+
         if doas == true then
-            portageCommand = portageCommand .. "doas"
-        else
-            portageCommand = portageCommand .. "sudo"
+            portageCommand = "doas"
         end
+
         portageCommand = portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
+
         for i = 1, #portagePackages do
-            portageCommand = portageCommand .. " " .. portagePackages[i]
+            portageCommand = portageCommand .. portagePackages[i]
         end
+
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. portageCommand)
+    end -- }}}
+
     end
 
-    ---@type string
-    local masonCommand = ""
-    if #masonPackages > 0 then
+    if #masonPackages > 0 then -- {{{
         for i = 1, #masonPackages do
             masonCommand = masonCommand .. " " .. masonPackages[i]
         end
         vim.cmd("MasonInstall" .. masonCommand)
-    end
-
-    if #portageCommand > 0 then
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. portageCommand)
-    end
+    end -- }}}
 end
 
 return m
