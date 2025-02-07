@@ -84,9 +84,13 @@ function m.ensure_installed(packagesData, doas)
     m._masonPackages = {}
     ---@type table
     m._pacmanPackages = {}
+    ---@type table
+    m._aurPackages = {}
 
     ---@type string
     m._masonCommand = ""
+    ---@type string
+    m._aurHelper = ""
     -- }}}
 
     for i = 1, #packagesData do -- {{{
@@ -97,10 +101,13 @@ function m.ensure_installed(packagesData, doas)
                     string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "portage")
                 then
                     table.insert(m._portagePackages, packagesData[i])
-                elseif
-                    string.find(osData.release, "arch") and m._checkPackageExistInRepos(packagesData[i], "pacman")
-                then
-                    table.insert(m._pacmanPackages, packagesData[i])
+                elseif string.find(osData.release, "arch") then
+                    if m._checkPackageExistInRepos(packagesData[i], "pacman") then
+                        table.insert(m._pacmanPackages, packagesData[i])
+                    elseif vim.fn.executable("paru") == 1 and m._checkPackageExistInRepos(packagesData[i], "paru") then
+                        m._aurHelper = " paru -S "
+                        table.insert(m._aurPackages, packagesData[i])
+                    end
                 elseif require("mason-registry").has_package(packagesData[i]) then
                     table.insert(m._masonPackages, packagesData[i])
                 else
@@ -159,6 +166,19 @@ function m.ensure_installed(packagesData, doas)
         end
 
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._pacmanCommand)
+    end
+
+    if #m._aurPackages > 0 then
+        ---@type string
+        m._aurCommand = "sudo " .. m._aurHelper
+
+        if doas == true then
+            m._aurCommand = "doas " .. m._aurHelper
+        end
+
+        for i = 1, #m._aurPackages do
+            m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
+        end
     end
 
     if #m._masonPackages > 0 then -- {{{
