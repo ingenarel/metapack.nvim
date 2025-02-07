@@ -74,6 +74,8 @@ function m.ensure_installed(packagesData, doas)
     local portagePackages = {}
     ---@type table
     local masonPackages = {}
+    ---@type table
+    local pacmanPackages = {}
 
     ---@type string
     local masonCommand = ""
@@ -85,6 +87,10 @@ function m.ensure_installed(packagesData, doas)
                 vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
                 if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "emerge") then
                     table.insert(portagePackages, packagesData[i])
+                elseif
+                    string.find(osData.release, "arch") and m._checkPackageExistInRepos(packagesData[i], "pacman")
+                then
+                    table.insert(pacmanPackages, packagesData[i])
                 elseif require("mason-registry").has_package(packagesData[i]) then
                     table.insert(masonPackages, packagesData[i])
                 else
@@ -103,6 +109,9 @@ function m.ensure_installed(packagesData, doas)
                     end
                     if packagesData[i].mason then
                         table.insert(masonPackages, packagesData[i].name)
+                    end
+                    if packagesData[i].pacman then
+                        table.insert(pacmanPackages, packagesData[i].name)
                     end
                 end
             end
@@ -126,6 +135,19 @@ function m.ensure_installed(packagesData, doas)
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. portageCommand)
     end -- }}}
 
+    if #pacmanPackages > 0 then
+        ---@type string
+        local pacmanCommand = "sudo"
+
+        if doas == true then
+            pacmanCommand = "doas"
+        end
+
+        for i = 1, #pacmanPackages do
+            pacmanCommand = pacmanCommand .. " pacman -S " .. pacmanPackages[i]
+        end
+
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. pacmanCommand)
     end
 
     if #masonPackages > 0 then -- {{{
