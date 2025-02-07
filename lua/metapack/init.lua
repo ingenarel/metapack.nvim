@@ -179,6 +179,7 @@ function m.ensure_installed(packagesData, doas)
         for i = 1, #m._aurPackages do
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
         end
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aurCommand)
     end
 
     if #m._masonPackages > 0 then -- {{{
