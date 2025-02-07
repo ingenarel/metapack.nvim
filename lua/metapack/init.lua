@@ -45,7 +45,7 @@ function m._checkPackageExistInRepos(packageName, packageManager)
         end, -- }}}
 
         pacman = function() -- {{{
-            if vim.system({ "pacman", "-Ss", '"^' .. packageName .. '$"' }):wait().code == 0 then
+            if vim.system({ "pacman", "-Ss", "^" .. packageName .. "$" }):wait().code == 0 then
                 return true
             else
                 return false
