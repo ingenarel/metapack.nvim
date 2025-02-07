@@ -143,8 +143,9 @@ function m.ensure_installed(packagesData, doas)
             m._pacmanCommand = "doas"
         end
 
+        m._pacmanCommand = m._pacmanCommand .. " pacman -S "
         for i = 1, #m._pacmanPackages do
-            m._pacmanCommand = m._pacmanCommand .. " pacman -S " .. m._pacmanPackages[i]
+            m._pacmanCommand = m._pacmanCommand .. m._pacmanPackages[i]
         end
 
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._pacmanCommand)
