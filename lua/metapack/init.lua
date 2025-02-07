@@ -129,7 +129,7 @@ function m.ensure_installed(packagesData, doas)
         m._portageCommand = m._portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
 
         for i = 1, #m._portagePackages do
-            m._portageCommand = m._portageCommand .. m._portagePackages[i]
+            m._portageCommand = m._portageCommand .. " " .. m._portagePackages[i]
         end
 
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._portageCommand)
@@ -145,7 +145,7 @@ function m.ensure_installed(packagesData, doas)
 
         m._pacmanCommand = m._pacmanCommand .. " pacman -S "
         for i = 1, #m._pacmanPackages do
-            m._pacmanCommand = m._pacmanCommand .. m._pacmanPackages[i]
+            m._pacmanCommand = m._pacmanCommand .. " " .. m._pacmanPackages[i]
         end
 
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._pacmanCommand)
