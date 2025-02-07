@@ -82,11 +82,11 @@ require("metapack").ensure_installed(
 - [ ] dnf
 - [ ] luarocks
 - [ ] npm
-- [ ] pacman
 - [ ] paru
 - [ ] pip
 - [ ] scoop
 - [ ] yay
+- [x] pacman
 
 </details>
 
