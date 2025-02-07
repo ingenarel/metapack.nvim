@@ -51,6 +51,14 @@ function m._checkPackageExistInRepos(packageName, packageManager)
                 return false
             end
         end, -- }}}
+
+        paru = function() -- {{{
+            if vim.system({ "paru", "-Ssx", "^" .. packageName .. "$" }):wait().code == 0 then
+                return true
+            else
+                return false
+            end
+        end, -- }}}
     }
 
     if commands[packageManager] then
