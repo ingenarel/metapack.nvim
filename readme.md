@@ -26,7 +26,17 @@ doesn't, it tries to use mason as fallback
                 --lsp
                 "pyright", -- package could be string for simple use
                 "clangd",
-                { name = "lua-language-server", portage = true, os = "gentoo" } -- or it could be a table specifying stuff,
+                {
+                    name = "lua-language-server",
+                    portage = true,
+                    os = "gentoo"
+                } -- or it could be a table specifying stuff,
+                {
+                    name = "lua-language-server-git",
+                    aur = true,
+                    os = "arch",
+                    execName = "lua-language-server"
+                } -- you can use execName if the package name isn't the same as the executable name
                 "bash-language-server",
                 "termux-language-server",
                 "ltex-ls",
