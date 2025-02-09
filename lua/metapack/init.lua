@@ -16,8 +16,18 @@ m._aurPackages = {}
 ---@type string
 m._masonCommand = ""
 ---@type string
+m._aurHelperCommand = ""
+---@type string?
 m._aurHelper = ""
 -- }}}
+
+---@return nil
+function m._setAurHelper()
+    if vim.fn.executable("paru") == 1 then
+        m._aurHelperCommand = " paru -S "
+        m._aurHelper = "paru"
+    end
+end
 
 ---function m._checkInPath(packageName, executableName)-- {{{
 ---@return boolean
@@ -99,10 +109,12 @@ function m._catagorizePackages(packageData)
                 if m._checkPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
-                elseif vim.fn.executable("paru") == 1 and m._checkPackageExistInRepos(packageData, "paru") then
-                    m._aurHelper = " paru -S "
-                    table.insert(m._aurPackages, packageData)
-                    return
+                else
+                    m._setAurHelper()
+                    if m._aurHelper ~= nil and m._checkPackageExistInRepos(packageData, m._aurHelper) then
+                        table.insert(m._aurPackages, packageData)
+                        return
+                    end
                 end
             end
             if require("mason-registry").has_package(packageData) then
@@ -124,7 +136,10 @@ function m._catagorizePackages(packageData)
                     table.insert(m._pacmanPackages, packageData.name)
                 end
                 if packageData.aur then
-                    table.insert(m._aurPackages, packageData.name)
+                    m._setAurHelper()
+                    if m._aurHelper ~= nil and m._checkPackageExistInRepos(packageData.name, m._aurHelper) then
+                        table.insert(m._aurPackages, packageData.name)
+                    end
                 end
             end
         end
@@ -177,7 +192,7 @@ function m.ensure_installed(packagesData, doas)
 
     if #m._aurPackages > 0 then
         ---@type string
-        m._aurCommand = m._aurHelper
+        m._aurCommand = m._aurHelperCommand
 
         for i = 1, #m._aurPackages do
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
