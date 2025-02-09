@@ -132,6 +132,7 @@ function m.ensure_installed(packagesData, doas)
                     end
                     if packagesData[i].aur then
                         table.insert(m._aurPackages, packagesData[i].name)
+                    end
                 end
             end
         end -- }}}
