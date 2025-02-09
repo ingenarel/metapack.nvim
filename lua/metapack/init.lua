@@ -124,7 +124,10 @@ function m._catagorizePackages(packageData)
             end
         end
     elseif type(packageData) == "table" then
-        if m._checkInPath(packageData.name) == false then
+        if packageData.execName == nil then
+            packageData.execName = nil
+        end
+        if m._checkInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(osData.release, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
