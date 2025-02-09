@@ -89,6 +89,17 @@ function m._checkPackageExistInRepos(packageName, packageManager)
                 return false
             end
         end, -- }}}
+
+        yay = function()
+            if
+                vim.system({ "yay", "-Ss", packageName, "|", "grep", "-E", "^.+/" .. packageName .. " .+$" }):wait().code
+                == 0
+            then
+                return true
+            else
+                return false
+            end
+        end,
     }
 
     if commands[packageManager] then
