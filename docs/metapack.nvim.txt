@@ -1,18 +1,24 @@
+*metapack.nvim.txt*			     A Meta Package Manager For Neovim
+==============================================================================
+
 Ever installed plugins using mason and thought "hmm. I wish I could just use
 my system package manager for this too" Well say no more my dear cause
 metapack.nvim is here!
 
-### What metapack.nvim is:
+==============================================================================
+What metapack.nvim is:
+
 metapack.nvim isn't a plugin manager. It's a meta plugin manager. It doesn't
 install the plugins directly. Instead, it first tries to use your system
 package manager, if it can, then it tries to install it from that. And if it
 doesn't, it tries to use mason as fallback
 
-### Usage:
-<details>
-    <summary>Using <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a>:</summary>
+==============================================================================
+Usage							   *metapack.nvim-usage*
 
-```lua
+Using lazy.nvim ~
+
+>lua
     {
         "ingenarel/metapack.nvim",
         dependencies = {
@@ -55,36 +61,38 @@ doesn't, it tries to use mason as fallback
             }
         end,
     }
-```
-</details>
+<
 
-### Tips:
+==============================================================================
+Tips:
 
-<details>
-    <summary> Using doas </summary>
+
+Using doas  ~
 
 metapack works with sudo when trying to interact with your package
 manager. but it can also use doas.
 
-```lua
+>lua
     require("metapack").ensure_installed(
         {
             --packages
         }
         true
     )
-```
+<
 
-</details>
 
-### Current package manager support:
+==============================================================================
+Current package manager support:
+
 - [  portage](https://wiki.gentoo.org/wiki/Portage)
 - [  mason](https://github.com/williamboman/mason.nvim)
 - [󰣇  pacman](https://wiki.archlinux.org/title/Pacman)
 
-### GOALS:
-<details>
-    <summary> Implement these package managers:</summary>
+==============================================================================
+GOALS:
+
+Implement these package managers: ~
 
 - [ ] apt
 - [ ] building from source
@@ -98,10 +106,8 @@ manager. but it can also use doas.
 - [x] pacman
 - [x] paru
 
-</details>
 
-<details>
-    <summary> Implement these features </summary>
+Implement these features  ~
 
 - specifying:
     - [ ] version
@@ -114,5 +120,4 @@ manager. but it can also use doas.
         some stuff in gentoo, like codelldb and clang-format, are not separate
         packages, but instead they are USE flags in the clang package
 
-</details>
-<!-- vim: set textwidth=78: -->
+vim:tw=78:ts=8:noet:ft=help:norl:
