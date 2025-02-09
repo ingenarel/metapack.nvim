@@ -9,7 +9,7 @@ function m._checkInPath(packageName, executableName) -- {{{
     if executableName == nil then
         executableName = packageName
     end
-    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) then
+    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) == true then
         return true
     end
     return false -- }}}
@@ -130,6 +130,8 @@ function m.ensure_installed(packagesData, doas)
                     if packagesData[i].pacman then
                         table.insert(m._pacmanPackages, packagesData[i].name)
                     end
+                    if packagesData[i].aur then
+                        table.insert(m._aurPackages, packagesData[i].name)
                 end
             end
         end -- }}}
