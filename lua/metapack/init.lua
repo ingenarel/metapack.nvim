@@ -125,7 +125,7 @@ function m._catagorizePackages(packageData)
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
-            packageData.execName = nil
+            packageData.execName = packageData.name
         end
         if m._checkInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(osData.release, packageData.os) then
