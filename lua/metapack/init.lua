@@ -24,9 +24,11 @@ m._aurHelper = ""
 ---@return nil
 function m._setAurHelper()
     if vim.fn.executable("paru") == 1 then
-        m._aurHelperCommand = " paru -S "
         m._aurHelper = "paru"
+    elseif vim.fn.executable("yay") == 1 then
+        m._aurHelper = "yay"
     end
+    m._aurHelperCommand = m._aurHelper .. " -S "
 end
 
 ---function m._checkInPath(packageName, executableName)-- {{{
