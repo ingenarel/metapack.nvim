@@ -18,5 +18,5 @@ echo "$(
         " readme.md
         echo "vim:tw=78:ts=8:noet:ft=help:norl:"
     )"\
-    > ./docs/metapack.nvim.txt
+    > ./doc/metapack.nvim.txt
 
