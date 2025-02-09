@@ -32,7 +32,17 @@ Using lazy.nvim ~
                 --lsp
                 "pyright", -- package could be string for simple use
                 "clangd",
-                { name = "lua-language-server", portage = true, os = "gentoo" } -- or it could be a table specifying stuff,
+                {
+                    name = "lua-language-server",
+                    portage = true,
+                    os = "gentoo"
+                } -- or it could be a table specifying stuff,
+                {
+                    name = "lua-language-server-git",
+                    aur = true,
+                    os = "arch",
+                    execName = "lua-language-server"
+                } -- you can use execName if the package name isn't the same as the executable name
                 "bash-language-server",
                 "termux-language-server",
                 "ltex-ls",
@@ -78,6 +88,7 @@ Current package manager support:
 - [  portage](https://wiki.gentoo.org/wiki/Portage)
 - [  mason](https://github.com/williamboman/mason.nvim)
 - [󰣇  pacman](https://wiki.archlinux.org/title/Pacman)
+- [󰣇  paru](https://github.com/Morganamilo/paru)
 
 ==============================================================================
 GOALS:
@@ -90,11 +101,11 @@ Implement these package managers: ~
 - [ ] dnf
 - [ ] luarocks
 - [ ] npm
-- [ ] paru
 - [ ] pip
 - [ ] scoop
 - [ ] yay
 - [x] pacman
+- [x] paru
 
 
 Implement these features  ~

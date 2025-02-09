@@ -81,6 +81,7 @@ manager. but it can also use doas.
 - [  portage](https://wiki.gentoo.org/wiki/Portage)
 - [  mason](https://github.com/williamboman/mason.nvim)
 - [󰣇  pacman](https://wiki.archlinux.org/title/Pacman)
+- [󰣇  paru](https://github.com/Morganamilo/paru)
 
 ### GOALS:
 <details>
