@@ -92,11 +92,11 @@ manager. but it can also use doas.
 - [ ] dnf
 - [ ] luarocks
 - [ ] npm
-- [ ] paru
 - [ ] pip
 - [ ] scoop
 - [ ] yay
 - [x] pacman
+- [x] paru
 
 </details>
 

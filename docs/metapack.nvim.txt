@@ -100,11 +100,11 @@ Implement these package managers: ~
 - [ ] dnf
 - [ ] luarocks
 - [ ] npm
-- [ ] paru
 - [ ] pip
 - [ ] scoop
 - [ ] yay
 - [x] pacman
+- [x] paru
 
 
 Implement these features  ~
