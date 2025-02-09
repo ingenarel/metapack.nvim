@@ -1,6 +1,24 @@
 ---@type table
 local m = {}
 
+--variables{{{
+---@type table
+local osData = vim.uv.os_uname()
+---@type table
+m._portagePackages = {}
+---@type table
+m._masonPackages = {}
+---@type table
+m._pacmanPackages = {}
+---@type table
+m._aurPackages = {}
+
+---@type string
+m._masonCommand = ""
+---@type string
+m._aurHelper = ""
+-- }}}
+
 ---function m._checkInPath(packageName, executableName)-- {{{
 ---@return boolean
 ---@param packageName string
@@ -68,6 +86,51 @@ function m._checkPackageExistInRepos(packageName, packageManager)
     end
 end -- }}}
 
+---@param packageData table | string
+---@return nil
+function m._catagorizePackages(packageData)
+    if type(packageData) == "string" then
+        if m._checkInPath(packageData) == false then
+            vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
+            if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packageData, "portage") then
+                table.insert(m._portagePackages, packageData)
+                return
+            elseif string.find(osData.release, "arch") then
+                if m._checkPackageExistInRepos(packageData, "pacman") then
+                    table.insert(m._pacmanPackages, packageData)
+                    return
+                elseif vim.fn.executable("paru") == 1 and m._checkPackageExistInRepos(packageData, "paru") then
+                    m._aurHelper = " paru -S "
+                    table.insert(m._aurPackages, packageData)
+                    return
+                end
+            end
+            if require("mason-registry").has_package(packageData) then
+                table.insert(m._masonPackages, packageData)
+            else
+                vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
+            end
+        end
+    elseif type(packageData) == "table" then
+        if m._checkInPath(packageData.name) == false then
+            if packageData.os == nil or string.find(osData.release, packageData.os) then
+                if packageData.portage then
+                    table.insert(m._portagePackages, packageData.name)
+                end
+                if packageData.mason then
+                    table.insert(m._masonPackages, packageData.name)
+                end
+                if packageData.pacman then
+                    table.insert(m._pacmanPackages, packageData.name)
+                end
+                if packageData.aur then
+                    table.insert(m._aurPackages, packageData.name)
+                end
+            end
+        end
+    end
+end
+
 ---@param packagesData table
 ---@param doas boolean?
 function m.ensure_installed(packagesData, doas)
@@ -75,68 +138,9 @@ function m.ensure_installed(packagesData, doas)
     -- if osData.sysname == "Linux" then
     -- end}}}
 
-    --variables{{{
-    ---@type table
-    local osData = vim.uv.os_uname()
-    ---@type table
-    m._portagePackages = {}
-    ---@type table
-    m._masonPackages = {}
-    ---@type table
-    m._pacmanPackages = {}
-    ---@type table
-    m._aurPackages = {}
-
-    ---@type string
-    m._masonCommand = ""
-    ---@type string
-    m._aurHelper = ""
-    -- }}}
-
-    for i = 1, #packagesData do -- {{{
-        if type(packagesData[i]) == "string" then -- {{{
-            if m._checkInPath(packagesData[i]) == false then
-                vim.notify("Searching for " .. packagesData[i], vim.log.levels.INFO)
-                if
-                    string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packagesData[i], "portage")
-                then
-                    table.insert(m._portagePackages, packagesData[i])
-                elseif string.find(osData.release, "arch") then
-                    if m._checkPackageExistInRepos(packagesData[i], "pacman") then
-                        table.insert(m._pacmanPackages, packagesData[i])
-                    elseif vim.fn.executable("paru") == 1 and m._checkPackageExistInRepos(packagesData[i], "paru") then
-                        m._aurHelper = " paru -S "
-                        table.insert(m._aurPackages, packagesData[i])
-                    end
-                elseif require("mason-registry").has_package(packagesData[i]) then
-                    table.insert(m._masonPackages, packagesData[i])
-                else
-                    vim.notify(
-                        "Can't find " .. packagesData[i] .. " on any known package database!",
-                        vim.log.levels.WARN
-                    )
-                end
-            end
-        end -- }}}
-        if type(packagesData[i]) == "table" then -- {{{
-            if m._checkInPath(packagesData[i].name) == false then
-                if packagesData[i].os == nil or string.find(osData.release, packagesData[i].os) then
-                    if packagesData[i].portage then
-                        table.insert(m._portagePackages, packagesData[i].name)
-                    end
-                    if packagesData[i].mason then
-                        table.insert(m._masonPackages, packagesData[i].name)
-                    end
-                    if packagesData[i].pacman then
-                        table.insert(m._pacmanPackages, packagesData[i].name)
-                    end
-                    if packagesData[i].aur then
-                        table.insert(m._aurPackages, packagesData[i].name)
-                    end
-                end
-            end
-        end -- }}}
-    end -- }}}
+    for i = 1, #packagesData do
+        m._catagorizePackages(packagesData[i])
+    end
 
     if #m._portagePackages > 0 then -- {{{
         ---@type string
