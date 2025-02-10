@@ -110,6 +110,14 @@ function m._ifPackageExistInRepos(packageName, packageManager)
                 return false
             end
         end,
+
+        apt = function()
+            if vim.system({ "apt-cache", "search", "^" .. packageName .. "$" }):wait().code == 0 then
+                return true
+            else
+                return false
+            end
+        end,
     }
 
     if commands[packageManager] then
