@@ -63,8 +63,8 @@ doesn't, it tries to use mason as fallback
 <details>
     <summary> Using doas </summary>
 
-metapack works with sudo when trying to interact with your package
-manager. but it can also use doas.
+Metapack works with sudo when trying to interact with your package
+manager. But it can also use doas.
 
 ```lua
     require("metapack").ensure_installed(
@@ -78,10 +78,11 @@ manager. but it can also use doas.
 </details>
 
 ### Current package manager support:
-- [  portage](https://wiki.gentoo.org/wiki/Portage)
-- [  mason](https://github.com/williamboman/mason.nvim)
-- [󰣇  pacman](https://wiki.archlinux.org/title/Pacman)
-- [󰣇  paru](https://github.com/Morganamilo/paru)
+- [ portage](https://wiki.gentoo.org/wiki/Portage)
+- [ mason](https://github.com/williamboman/mason.nvim)
+- [󰣇 pacman](https://wiki.archlinux.org/title/Pacman)
+- [󰣇 paru](https://github.com/Morganamilo/paru)
+- [󰣇 yay](https://github.com/Jguer/yay)
 
 ### GOALS:
 <details>
@@ -95,7 +96,7 @@ manager. but it can also use doas.
 - [ ] npm
 - [ ] pip
 - [ ] scoop
-- [ ] yay
+- [x] yay
 - [x] pacman
 - [x] paru
 
@@ -104,14 +105,15 @@ manager. but it can also use doas.
 <details>
     <summary> Implement these features </summary>
 
-- specifying:
+- Specifying:
     - [ ] version
     - [ ] commit hash
     - [x] ~operating system / Linux distro~
     - [x] ~package manager~
 
-- features:
-    - [ ] work with gentoo USE flags
+- Features:
+    - [ ] A logger for managing, cleaning, deleting and updating packages.
+    - [ ] Work with gentoo USE flags
         some stuff in gentoo, like codelldb and clang-format, are not separate
         packages, but instead they are USE flags in the clang package
 
