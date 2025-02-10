@@ -31,11 +31,11 @@ function m._setAurHelper()
     m._aurHelperCommand = m._aurHelper .. " -S "
 end
 
----function m._checkInPath(packageName, executableName)-- {{{
+---function m._ifInPath(packageName, executableName)-- {{{
 ---@return boolean
 ---@param packageName string
 ---@param executableName string?
-function m._checkInPath(packageName, executableName) -- {{{
+function m._ifInPath(packageName, executableName) -- {{{
     if executableName == nil then
         executableName = packageName
     end
@@ -45,11 +45,11 @@ function m._checkInPath(packageName, executableName) -- {{{
     return false -- }}}
 end -- }}}
 
--- function m._checkPackageExistInRepos(packageName, packageManager){{{
+-- function m._ifPackageExistInRepos(packageName, packageManager){{{
 ---@param packageName string{{{
 ---@param packageManager string
 ---@return boolean}}}
-function m._checkPackageExistInRepos(packageName, packageManager)
+function m._ifPackageExistInRepos(packageName, packageManager)
     local commands = {
         portage = function() -- {{{
             if
@@ -113,18 +113,18 @@ end -- }}}
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
-        if m._checkInPath(packageData) == false then
+        if m._ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if string.find(osData.release, "gentoo") and m._checkPackageExistInRepos(packageData, "portage") then
+            if string.find(osData.release, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
                 return
             elseif string.find(osData.release, "arch") then
-                if m._checkPackageExistInRepos(packageData, "pacman") then
+                if m._ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
                 else
                     m._setAurHelper()
-                    if m._aurHelper ~= nil and m._checkPackageExistInRepos(packageData, m._aurHelper) then
+                    if m._aurHelper ~= nil and m._ifPackageExistInRepos(packageData, m._aurHelper) then
                         table.insert(m._aurPackages, packageData)
                         return
                     end
@@ -140,7 +140,7 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData.name
         end
-        if m._checkInPath(packageData.execName) == false then
+        if m._ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(osData.release, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
@@ -153,7 +153,7 @@ function m._catagorizePackages(packageData)
                 end
                 if packageData.aur then
                     m._setAurHelper()
-                    if m._aurHelper ~= nil and m._checkPackageExistInRepos(packageData.name, m._aurHelper) then
+                    if m._aurHelper ~= nil and m._ifPackageExistInRepos(packageData.name, m._aurHelper) then
                         table.insert(m._aurPackages, packageData.name)
                     end
                 end
