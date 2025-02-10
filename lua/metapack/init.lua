@@ -12,13 +12,17 @@ m._masonPackages = {}
 m._pacmanPackages = {}
 ---@type table
 m._aurPackages = {}
+---@type table
+m._aptPackages = {}
 
 ---@type string
 m._masonCommand = ""
 ---@type string
 m._aurHelperCommand = ""
----@type string?
+---@type string
 m._aurHelper = ""
+---@type string
+m._aptCommand = ""
 -- }}}
 
 -- ---@return boolean
@@ -147,6 +151,10 @@ function m._catagorizePackages(packageData)
                         return
                     end
                 end
+            elseif m._osName == "ubuntu" then
+                if m._ifPackageExistInRepos(packageData, "apt") then
+                    table.insert(m._aptPackages, packageData)
+                end
             end
             if require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
@@ -172,6 +180,9 @@ function m._catagorizePackages(packageData)
                 if packageData.aur then
                     m._setAurHelper()
                     table.insert(m._aurPackages, packageData.name)
+                end
+                if packageData.apt then
+                    table.insert(m._aptPackages, packageData.name)
                 end
             end
         end
@@ -230,6 +241,14 @@ function m.ensure_installed(packagesData, doas)
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
         end
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aurCommand)
+    end
+
+    if #m._aptPackages > 0 then
+        m._aptCommand = "sudo apt-get install "
+        for i = 1, #m._aptPackages do
+            m._aptcommand = m._aptCommand + " " .. m._aptPackages[i]
+        end
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aptCommand)
     end
 
     if #m._masonPackages > 0 then -- {{{
