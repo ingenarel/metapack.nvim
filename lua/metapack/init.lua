@@ -3,7 +3,7 @@ local m = {}
 
 --variables{{{
 ---@type string
-m._osName = vim.system({ "sed", "-n", "-E", 's/^id="?(.+)"?/\\1/Ip', "/etc/os-release" }):wait().stdout
+m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?' }):wait().stdout()
 ---@type table
 m._portagePackages = {}
 ---@type table
@@ -28,7 +28,7 @@ m._aptCommand = ""
 -- ---@return boolean
 -- ---@param name string
 -- function m._ifDistro(name)
---     if vim.system { "grep", "-i", "-E", '^(name|pretty_name|id)="?' .. name .. '"?' } then
+--     if string.find(m._osData, name) then
 --         return true
 --     else
 --         return false
@@ -137,10 +137,10 @@ function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if m._ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if m._osName == "gentoo" and m._ifPackageExistInRepos(packageData, "portage") then
+            if string.find(m._osData, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
                 return
-            elseif m._osName == "arch" then
+            elseif string.find(m._osData, "arch") then
                 if m._ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
@@ -151,7 +151,7 @@ function m._catagorizePackages(packageData)
                         return
                     end
                 end
-            elseif m._osName == "ubuntu" or m._osName == "debian" then
+            elseif string.find(m._osData, "debian") then
                 if m._ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
@@ -167,7 +167,7 @@ function m._catagorizePackages(packageData)
             packageData.execName = packageData.name
         end
         if m._ifInPath(packageData.execName) == false then
-            if packageData.os == nil or m._osName == packageData.os then
+            if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
                 end
