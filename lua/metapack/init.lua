@@ -2,8 +2,8 @@
 local m = {}
 
 --variables{{{
----@type table
-local osData = vim.uv.os_uname()
+---@type string
+m._osName = vim.system({ "sed", "-n", "-E", 's/^id="?(.+)"?/\\1/Ip', "/etc/os-release" }):wait().stdout
 ---@type table
 m._portagePackages = {}
 ---@type table
@@ -20,6 +20,16 @@ m._aurHelperCommand = ""
 ---@type string?
 m._aurHelper = ""
 -- }}}
+
+-- ---@return boolean
+-- ---@param name string
+-- function m._ifDistro(name)
+--     if vim.system { "grep", "-i", "-E", '^(name|pretty_name|id)="?' .. name .. '"?' } then
+--         return true
+--     else
+--         return false
+--     end
+-- end
 
 ---@return nil
 function m._setAurHelper()
@@ -115,10 +125,10 @@ function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if m._ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if string.find(osData.release, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
+            if m._osName == "gentoo" and m._ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
                 return
-            elseif string.find(osData.release, "arch") then
+            elseif m._osName == "arch" then
                 if m._ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
@@ -141,7 +151,7 @@ function m._catagorizePackages(packageData)
             packageData.execName = packageData.name
         end
         if m._ifInPath(packageData.execName) == false then
-            if packageData.os == nil or string.find(osData.release, packageData.os) then
+            if packageData.os == nil or m._osName == packageData.os then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
                 end
