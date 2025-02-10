@@ -2,6 +2,8 @@ Ever installed plugins using mason and thought "hmm. I wish I could just use
 my system package manager for this too" Well say no more my dear cause
 metapack.nvim is here!
 
+[![YouTube Video](https://img.youtube.com/vi/3dRy8ad6oHM/0.jpg)](https://www.youtube.com/watch?v=3dRy8ad6oHM)
+
 ### What metapack.nvim is:
 metapack.nvim isn't a plugin manager. It's a meta plugin manager. It doesn't
 install the plugins directly. Instead, it first tries to use your system
