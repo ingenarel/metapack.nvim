@@ -3,7 +3,7 @@ local m = {}
 
 --variables{{{
 ---@type string
-m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?' }):wait().stdout
+m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" }):wait().stdout
 ---@type table
 m._portagePackages = {}
 ---@type table
