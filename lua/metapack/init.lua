@@ -151,7 +151,7 @@ function m._catagorizePackages(packageData)
                         return
                     end
                 end
-            elseif m._osName == "ubuntu" then
+            elseif m._osName == "ubuntu" or m._osName == "debian" then
                 if m._ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
