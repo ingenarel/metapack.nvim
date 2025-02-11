@@ -25,8 +25,6 @@ m._aptPackages = {}
 ---@type string
 m._masonCommand = ""
 ---@type string
-m._aurHelperCommand = ""
----@type string
 m._aurHelper = ""
 ---@type string
 m._aptCommand = ""
@@ -41,16 +39,6 @@ m._aptCommand = ""
 --         return false
 --     end
 -- end
-
----@return nil
-function m._setAurHelper()
-    if vim.fn.executable("paru") == 1 then
-        m._aurHelper = "paru"
-    elseif vim.fn.executable("yay") == 1 then
-        m._aurHelper = "yay"
-    end
-    m._aurHelperCommand = m._aurHelper .. " -S "
-end
 
 ---function m._ifInPath(packageName, executableName)-- {{{
 ---@return boolean
@@ -152,7 +140,7 @@ function m._catagorizePackages(packageData)
                     table.insert(m._pacmanPackages, packageData)
                     return
                 else
-                    m._setAurHelper()
+                    m._aurHelper = require("metapack.utils").setAurHelper()
                     if m._aurHelper ~= "" and m._ifPackageExistInRepos(packageData, m._aurHelper) then
                         table.insert(m._aurPackages, packageData)
                         return
@@ -186,7 +174,7 @@ function m._catagorizePackages(packageData)
                     table.insert(m._pacmanPackages, packageData.name)
                 end
                 if packageData.aur then
-                    m._setAurHelper()
+                    m._aurHelper = require("metapack.utils").setAurHelper()
                     table.insert(m._aurPackages, packageData.name)
                 end
                 if packageData.apt then
@@ -243,7 +231,7 @@ function m.ensure_installed(packagesData, doas)
 
     if #m._aurPackages > 0 then
         ---@type string
-        m._aurCommand = m._aurHelperCommand
+        m._aurCommand = m._aurHelper .. " -S "
 
         for i = 1, #m._aurPackages do
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
