@@ -246,7 +246,7 @@ function m.ensure_installed(packagesData, doas)
     if #m._aptPackages > 0 then
         m._aptCommand = "sudo apt-get install "
         for i = 1, #m._aptPackages do
-            m._aptcommand = m._aptCommand + " " .. m._aptPackages[i]
+            m._aptcommand = m._aptCommand .. " " .. m._aptPackages[i]
         end
         vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aptCommand)
     end
