@@ -84,13 +84,12 @@ manager. But it can also use doas.
 - [ mason](https://github.com/williamboman/mason.nvim)
 - [󰣇 pacman](https://wiki.archlinux.org/title/Pacman)
 - [󰣇 paru](https://github.com/Morganamilo/paru)
-- [󰣇 yay](https://github.com/Jguer/yay)
+- [󰣚 apt](https://en.wikipedia.org/wiki/APT_(software))
 
 ### GOALS:
 <details>
     <summary> Implement these package managers:</summary>
 
-- [ ] apt
 - [ ] building from source
 - [ ] cargo
 - [ ] dnf
@@ -98,6 +97,7 @@ manager. But it can also use doas.
 - [ ] npm
 - [ ] pip
 - [ ] scoop
+- [x] apt
 - [x] yay
 - [x] pacman
 - [x] paru

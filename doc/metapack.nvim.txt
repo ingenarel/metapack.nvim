@@ -91,14 +91,13 @@ Current package manager support:
 - [ mason](https://github.com/williamboman/mason.nvim)
 - [󰣇 pacman](https://wiki.archlinux.org/title/Pacman)
 - [󰣇 paru](https://github.com/Morganamilo/paru)
-- [󰣇 yay](https://github.com/Jguer/yay)
+- [󰣚 apt](https://en.wikipedia.org/wiki/APT_(software))
 
 ==============================================================================
 GOALS:
 
 Implement these package managers: ~
 
-- [ ] apt
 - [ ] building from source
 - [ ] cargo
 - [ ] dnf
@@ -106,6 +105,7 @@ Implement these package managers: ~
 - [ ] npm
 - [ ] pip
 - [ ] scoop
+- [x] apt
 - [x] yay
 - [x] pacman
 - [x] paru
