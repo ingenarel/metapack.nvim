@@ -162,6 +162,7 @@ function m._catagorizePackages(packageData)
                 if m._ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
+                return
             end
             if require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
