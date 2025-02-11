@@ -3,7 +3,14 @@ local m = {}
 
 --variables{{{
 ---@type string
-m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" }):wait().stdout
+m._osData = ""
+if vim.fn.has("win32") == 0 then -- {{{
+    m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
+        :wait().stdout
+else
+    m._osData = "windows"
+end -- }}}
+
 ---@type table
 m._portagePackages = {}
 ---@type table
