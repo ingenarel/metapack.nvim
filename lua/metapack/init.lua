@@ -153,7 +153,7 @@ function m._catagorizePackages(packageData)
                     return
                 else
                     m._setAurHelper()
-                    if m._aurHelper ~= nil and m._ifPackageExistInRepos(packageData, m._aurHelper) then
+                    if m._aurHelper ~= "" and m._ifPackageExistInRepos(packageData, m._aurHelper) then
                         table.insert(m._aurPackages, packageData)
                         return
                     end
