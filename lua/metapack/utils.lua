@@ -1,8 +1,8 @@
 local m = {}
 
----@return string
 ---Sets the AUR helper, currently supports yay, and paru
 ---If you want to add something just add it to the `aurHelperList`
+---@return string # returns the aur helper name. just the name, so just `paru`, `yay` etc etc
 function m.setAurHelper()
     local aurHelperList = {
         "paru",
