@@ -30,16 +30,6 @@ m._aurHelper = ""
 m._aptCommand = ""
 -- }}}
 
--- ---@return boolean
--- ---@param name string
--- function m._ifDistro(name)
---     if string.find(m._osData, name) then
---         return true
---     else
---         return false
---     end
--- end
-
 ---function m._ifInPath(packageName, executableName)-- {{{
 ---@return boolean
 ---@param packageName string
