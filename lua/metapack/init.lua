@@ -30,100 +30,34 @@ m._aurHelper = ""
 m._aptCommand = ""
 -- }}}
 
--- function m._ifPackageExistInRepos(packageName, packageManager){{{
----@param packageName string{{{
----@param packageManager string
----@return boolean}}}
-function m._ifPackageExistInRepos(packageName, packageManager)
-    local commands = {
-        portage = function() -- {{{
-            if
-                vim.system({
-                    "emerge",
-                    "--ask",
-                    "n",
-                    "--pretend",
-                    "--oneshot",
-                    "--nodeps",
-                    "--verbose",
-                    "n",
-                    "--color",
-                    "n",
-                    packageName,
-                })
-                    :wait().code == 0
-            then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        pacman = function() -- {{{
-            if vim.system({ "pacman", "-Ss", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        paru = function() -- {{{
-            if vim.system({ "paru", "-Ssx", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        yay = function()
-            if
-                vim.system({ "sh", "-c", "yay -Ss " .. packageName .. ' | grep -E "^.+/' .. packageName .. ' .+$"' })
-                    :wait().code == 0
-            then
-                return true
-            else
-                return false
-            end
-        end,
-
-        apt = function()
-            if vim.system({ "apt-cache", "search", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end,
-    }
-
-    if commands[packageManager] then
-        return commands[packageManager]()
-    else
-        return false
-    end
-end -- }}}
-
 ---@param packageData table | string
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if require("metapack.utils").ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if string.find(m._osData, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
+            if
+                string.find(m._osData, "gentoo")
+                and require("metapack.utils").ifPackageExistInRepos(packageData, "portage")
+            then
                 table.insert(m._portagePackages, packageData)
                 return
             elseif string.find(m._osData, "arch") then
-                if m._ifPackageExistInRepos(packageData, "pacman") then
+                if require("metapack.utils").ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
                 else
                     m._aurHelper = require("metapack.utils").setAurHelper()
-                    if m._aurHelper ~= "" and m._ifPackageExistInRepos(packageData, m._aurHelper) then
+                    if
+                        m._aurHelper ~= ""
+                        and require("metapack.utils").ifPackageExistInRepos(packageData, m._aurHelper)
+                    then
                         table.insert(m._aurPackages, packageData)
                         return
                     end
                 end
             elseif string.find(m._osData, "debian") then
-                if m._ifPackageExistInRepos(packageData, "apt") then
+                if require("metapack.utils").ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
                 return

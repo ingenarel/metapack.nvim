@@ -32,4 +32,76 @@ function m.ifInPath(packageName, executableName)
     return false
 end
 
+---checks if package exist in repos
+---@param packageName string the package name
+---@param packageManager string package manager name
+---@return boolean # true if exists, false if doesn't
+function m.ifPackageExistInRepos(packageName, packageManager)
+    local commands = {
+        portage = function()
+            if
+                vim.system({
+                    "emerge",
+                    "--ask",
+                    "n",
+                    "--pretend",
+                    "--oneshot",
+                    "--nodeps",
+                    "--verbose",
+                    "n",
+                    "--color",
+                    "n",
+                    packageName,
+                })
+                    :wait().code == 0
+            then
+                return true
+            else
+                return false
+            end
+        end,
+
+        pacman = function()
+            if vim.system({ "pacman", "-Ss", "^" .. packageName .. "$" }):wait().code == 0 then
+                return true
+            else
+                return false
+            end
+        end,
+
+        paru = function()
+            if vim.system({ "paru", "-Ssx", "^" .. packageName .. "$" }):wait().code == 0 then
+                return true
+            else
+                return false
+            end
+        end,
+
+        yay = function()
+            if
+                vim.system({ "sh", "-c", "yay -Ss " .. packageName .. ' | grep -E "^.+/' .. packageName .. ' .+$"' })
+                    :wait().code == 0
+            then
+                return true
+            else
+                return false
+            end
+        end,
+
+        apt = function()
+            if vim.system({ "apt-cache", "search", "^" .. packageName .. "$" }):wait().code == 0 then
+                return true
+            else
+                return false
+            end
+        end,
+    }
+
+    if commands[packageManager] then
+        return commands[packageManager]()
+    else
+        return false
+    end
+end
+
 return m
