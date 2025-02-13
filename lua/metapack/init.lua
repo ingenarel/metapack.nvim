@@ -30,20 +30,6 @@ m._aurHelper = ""
 m._aptCommand = ""
 -- }}}
 
----function m._ifInPath(packageName, executableName)-- {{{
----@return boolean
----@param packageName string
----@param executableName string?
-function m._ifInPath(packageName, executableName) -- {{{
-    if executableName == nil then
-        executableName = packageName
-    end
-    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) == true then
-        return true
-    end
-    return false -- }}}
-end -- }}}
-
 -- function m._ifPackageExistInRepos(packageName, packageManager){{{
 ---@param packageName string{{{
 ---@param packageManager string
@@ -120,7 +106,7 @@ end -- }}}
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
-        if m._ifInPath(packageData) == false then
+        if require("metapack.utils").ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
@@ -152,7 +138,7 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData.name
         end
-        if m._ifInPath(packageData.execName) == false then
+        if require("metapack.utils").ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
