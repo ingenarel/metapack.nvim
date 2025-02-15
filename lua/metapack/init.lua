@@ -25,141 +25,39 @@ m._aptPackages = {}
 ---@type string
 m._masonCommand = ""
 ---@type string
-m._aurHelperCommand = ""
----@type string
 m._aurHelper = ""
 ---@type string
 m._aptCommand = ""
 -- }}}
 
--- ---@return boolean
--- ---@param name string
--- function m._ifDistro(name)
---     if string.find(m._osData, name) then
---         return true
---     else
---         return false
---     end
--- end
-
----@return nil
-function m._setAurHelper()
-    if vim.fn.executable("paru") == 1 then
-        m._aurHelper = "paru"
-    elseif vim.fn.executable("yay") == 1 then
-        m._aurHelper = "yay"
-    end
-    m._aurHelperCommand = m._aurHelper .. " -S "
-end
-
----function m._ifInPath(packageName, executableName)-- {{{
----@return boolean
----@param packageName string
----@param executableName string?
-function m._ifInPath(packageName, executableName) -- {{{
-    if executableName == nil then
-        executableName = packageName
-    end
-    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) == true then
-        return true
-    end
-    return false -- }}}
-end -- }}}
-
--- function m._ifPackageExistInRepos(packageName, packageManager){{{
----@param packageName string{{{
----@param packageManager string
----@return boolean}}}
-function m._ifPackageExistInRepos(packageName, packageManager)
-    local commands = {
-        portage = function() -- {{{
-            if
-                vim.system({
-                    "emerge",
-                    "--ask",
-                    "n",
-                    "--pretend",
-                    "--oneshot",
-                    "--nodeps",
-                    "--verbose",
-                    "n",
-                    "--color",
-                    "n",
-                    packageName,
-                })
-                    :wait().code == 0
-            then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        pacman = function() -- {{{
-            if vim.system({ "pacman", "-Ss", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        paru = function() -- {{{
-            if vim.system({ "paru", "-Ssx", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end, -- }}}
-
-        yay = function()
-            if
-                vim.system({ "sh", "-c", "yay -Ss " .. packageName .. ' | grep -E "^.+/' .. packageName .. ' .+$"' })
-                    :wait().code == 0
-            then
-                return true
-            else
-                return false
-            end
-        end,
-
-        apt = function()
-            if vim.system({ "apt-cache", "search", "^" .. packageName .. "$" }):wait().code == 0 then
-                return true
-            else
-                return false
-            end
-        end,
-    }
-
-    if commands[packageManager] then
-        return commands[packageManager]()
-    else
-        return false
-    end
-end -- }}}
-
 ---@param packageData table | string
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
-        if m._ifInPath(packageData) == false then
+        if require("metapack.utils").ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if string.find(m._osData, "gentoo") and m._ifPackageExistInRepos(packageData, "portage") then
+            if
+                string.find(m._osData, "gentoo")
+                and require("metapack.utils").ifPackageExistInRepos(packageData, "portage")
+            then
                 table.insert(m._portagePackages, packageData)
                 return
             elseif string.find(m._osData, "arch") then
-                if m._ifPackageExistInRepos(packageData, "pacman") then
+                if require("metapack.utils").ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
                 else
-                    m._setAurHelper()
-                    if m._aurHelper ~= nil and m._ifPackageExistInRepos(packageData, m._aurHelper) then
+                    m._aurHelper = require("metapack.utils").setAurHelper()
+                    if
+                        m._aurHelper ~= ""
+                        and require("metapack.utils").ifPackageExistInRepos(packageData, m._aurHelper)
+                    then
                         table.insert(m._aurPackages, packageData)
                         return
                     end
                 end
             elseif string.find(m._osData, "debian") then
-                if m._ifPackageExistInRepos(packageData, "apt") then
+                if require("metapack.utils").ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
                 return
@@ -174,7 +72,7 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData.name
         end
-        if m._ifInPath(packageData.execName) == false then
+        if require("metapack.utils").ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
@@ -186,7 +84,7 @@ function m._catagorizePackages(packageData)
                     table.insert(m._pacmanPackages, packageData.name)
                 end
                 if packageData.aur then
-                    m._setAurHelper()
+                    m._aurHelper = require("metapack.utils").setAurHelper()
                     table.insert(m._aurPackages, packageData.name)
                 end
                 if packageData.apt then
@@ -243,7 +141,7 @@ function m.ensure_installed(packagesData, doas)
 
     if #m._aurPackages > 0 then
         ---@type string
-        m._aurCommand = m._aurHelperCommand
+        m._aurCommand = m._aurHelper .. " -S "
 
         for i = 1, #m._aurPackages do
             m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
