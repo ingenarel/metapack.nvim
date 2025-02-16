@@ -30,7 +30,7 @@ m._aurHelper = ""
 m._aptCommand = ""
 -- }}}
 
----@param packageData table | string
+---@param packageData (string|PackageData)
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then

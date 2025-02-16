@@ -1,0 +1,10 @@
+---@class (exact) PackageData
+---@field name string The name of the package
+---@field os string? The operating system to install the package for, so if it doesn't match the current os, it doesn't
+---install the package
+---@field execName string? optional executable name of the package
+---@field portage boolean? if true, install using portage
+---@field mason boolean? if true, install using mason
+---@field pacman boolean? if true, install using pacman
+---@field aur boolean? if true, install using an aur helper
+---@field apt boolean? if true, install using apt
