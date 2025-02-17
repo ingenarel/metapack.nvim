@@ -1,34 +1,26 @@
----@type table
-local m = {}
+---@class initModule
+local m = {
+    _portagePackages = {},
+    _portageCommand = "",
+    _masonPackages = {},
+    _pacmanPackages = {},
+    _pacmanCommand = "",
+    _aurPackages = {},
+    _aurCommand = "",
+    _aurHelper = "",
+    _aptPackages = {},
+    _masonCommand = "",
+    _aptCommand = "",
+    _osData = "",
+    _rootCommand = "sudo ",
+}
 
---variables{{{
----@type string
-m._osData = ""
 if vim.fn.has("win32") == 0 then -- {{{
     m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
         :wait().stdout
 else
     m._osData = "windows"
 end -- }}}
-
----@type table
-m._portagePackages = {}
----@type table
-m._masonPackages = {}
----@type table
-m._pacmanPackages = {}
----@type table
-m._aurPackages = {}
----@type table
-m._aptPackages = {}
-
----@type string
-m._masonCommand = ""
----@type string
-m._aurHelper = ""
----@type string
-m._aptCommand = ""
--- }}}
 
 ---@param packageData (string|PackageData)
 ---@return nil
@@ -95,7 +87,7 @@ function m._catagorizePackages(packageData)
     end
 end
 
----@param packagesData table
+---@param packagesData (string|PackageData)[]
 ---@param doas boolean?
 function m.ensure_installed(packagesData, doas)
     -- NOTE: use this after i try to implement windows and mac{{{

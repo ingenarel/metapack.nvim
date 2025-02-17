@@ -1,3 +1,5 @@
+---@meta
+
 ---@class (exact) PackageData
 ---@field name string The name of the package
 ---@field os string? The operating system to install the package for, so if it doesn't match the current os, it doesn't
@@ -8,3 +10,19 @@
 ---@field pacman boolean? if true, install using pacman
 ---@field aur boolean? if true, install using an aur helper
 ---@field apt boolean? if true, install using apt
+
+---@class (exact) initModule the main init module
+---@field _catagorizePackages function
+---@field ensure_installed function
+---@field _osData string
+---@field _portagePackages string[]
+---@field _portageCommand string
+---@field _masonPackages string[]
+---@field _masonCommand string
+---@field _pacmanPackages string[]
+---@field _pacmanCommand string
+---@field _aurPackages string[]
+---@field _aurCommand string
+---@field _aurHelper string
+---@field _aptPackages string[]
+---@field _aptCommand string
