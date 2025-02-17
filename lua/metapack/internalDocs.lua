@@ -11,7 +11,7 @@
 ---@field aur boolean? if true, install using an aur helper
 ---@field apt boolean? if true, install using apt
 
----@class (exact) initModule the main init module
+---@class initModule the main init module
 ---@field _catagorizePackages function
 ---@field ensure_installed function
 ---@field _osData string
