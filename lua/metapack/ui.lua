@@ -11,3 +11,6 @@ vim.api.nvim_open_win(buf, true, {
     style = "minimal",
 })
 vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "your mom" })
+vim.bo[buf].modifiable = false
+vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true })
+vim.api.nvim_buf_set_keymap(buf, "n", "q", "<CMD>q<CR>", { noremap = true, silent = true })
