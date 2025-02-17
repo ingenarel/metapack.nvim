@@ -98,22 +98,12 @@ function m.ensure_installed(packagesData, doas)
         m._catagorizePackages(packagesData[i])
     end
 
-    if #m._portagePackages > 0 then -- {{{
-        ---@type string
-        m._portageCommand = "sudo"
+    if doas == true then
+        m._rootCommand = "doas "
+    end
 
-        if doas == true then
-            m._portageCommand = "doas"
-        end
-
-        m._portageCommand = m._portageCommand .. " emerge --ask y --verbose --color y --quiet-build y"
-
-        for i = 1, #m._portagePackages do
-            m._portageCommand = m._portageCommand .. " " .. m._portagePackages[i]
-        end
-
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._portageCommand)
-    end -- }}}
+    local install = require("metapack.utils").installPackages
+    install(m._portagePackages, m._rootCommand .. " emerge --ask y --verbose --color y --quiet-build y ")
 
     if #m._pacmanPackages > 0 then
         ---@type string
