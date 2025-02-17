@@ -104,40 +104,9 @@ function m.ensure_installed(packagesData, doas)
 
     local install = require("metapack.utils").installPackages
     install(m._portagePackages, m._rootCommand .. " emerge --ask y --verbose --color y --quiet-build y ")
-
-    if #m._pacmanPackages > 0 then
-        ---@type string
-        m._pacmanCommand = "sudo"
-
-        if doas == true then
-            m._pacmanCommand = "doas"
-        end
-
-        m._pacmanCommand = m._pacmanCommand .. " pacman -S "
-        for i = 1, #m._pacmanPackages do
-            m._pacmanCommand = m._pacmanCommand .. " " .. m._pacmanPackages[i]
-        end
-
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._pacmanCommand)
-    end
-
-    if #m._aurPackages > 0 then
-        ---@type string
-        m._aurCommand = m._aurHelper .. " -S "
-
-        for i = 1, #m._aurPackages do
-            m._aurCommand = m._aurCommand .. " " .. m._aurPackages[i]
-        end
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aurCommand)
-    end
-
-    if #m._aptPackages > 0 then
-        m._aptCommand = "sudo apt-get install "
-        for i = 1, #m._aptPackages do
-            m._aptCommand = m._aptCommand .. " " .. m._aptPackages[i]
-        end
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. m._aptCommand)
-    end
+    install(m._pacmanPackages, m._rootCommand .. " pacman -S ")
+    install(m._aurPackages, m._aurHelper .. " -S ")
+    install(m._aurPackages, m._rootCommand .. " apt-get install ")
 
     if #m._masonPackages > 0 then -- {{{
         for i = 1, #m._masonPackages do
