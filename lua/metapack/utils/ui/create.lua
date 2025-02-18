@@ -26,3 +26,5 @@ function m.createLogo(width)
 
     return logo
 end
+
+return m
