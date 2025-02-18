@@ -21,30 +21,30 @@ end -- }}}
 ---@return nil
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
-        if require("metapack.utils").ifInPath(packageData) == false then
+        if require("metapack.utils.packageManager").ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if
                 string.find(m._osData, "gentoo")
-                and require("metapack.utils").ifPackageExistInRepos(packageData, "portage")
+                and require("metapack.utils.packageManager").ifPackageExistInRepos(packageData, "portage")
             then
                 table.insert(m._portagePackages, packageData)
                 return
             elseif string.find(m._osData, "arch") then
-                if require("metapack.utils").ifPackageExistInRepos(packageData, "pacman") then
+                if require("metapack.utils.packageManager").ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
                     return
                 else
-                    m._aurHelper = require("metapack.utils").setAurHelper()
+                    m._aurHelper = require("metapack.utils.packageManager").setAurHelper()
                     if
                         m._aurHelper ~= ""
-                        and require("metapack.utils").ifPackageExistInRepos(packageData, m._aurHelper)
+                        and require("metapack.utils.packageManager").ifPackageExistInRepos(packageData, m._aurHelper)
                     then
                         table.insert(m._aurPackages, packageData)
                         return
                     end
                 end
             elseif string.find(m._osData, "debian") then
-                if require("metapack.utils").ifPackageExistInRepos(packageData, "apt") then
+                if require("metapack.utils.packageManager").ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
                 end
                 return
@@ -59,7 +59,7 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData.name
         end
-        if require("metapack.utils").ifInPath(packageData.execName) == false then
+        if require("metapack.utils.packageManager").ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData.name)
@@ -71,7 +71,7 @@ function m._catagorizePackages(packageData)
                     table.insert(m._pacmanPackages, packageData.name)
                 end
                 if packageData.aur then
-                    m._aurHelper = require("metapack.utils").setAurHelper()
+                    m._aurHelper = require("metapack.utils.packageManager").setAurHelper()
                     table.insert(m._aurPackages, packageData.name)
                 end
                 if packageData.apt then
@@ -97,7 +97,7 @@ function m.ensure_installed(packagesData, doas)
         m._rootCommand = "doas "
     end
 
-    local install = require("metapack.utils").installPackages
+    local install = require("metapack.utils.packageManager").installPackages
     install(m._portagePackages, m._rootCommand .. " emerge --ask y --verbose --color y --quiet-build y ")
     install(m._pacmanPackages, m._rootCommand .. " pacman -S ")
     install(m._aurPackages, m._aurHelper .. " -S ")
