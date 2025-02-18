@@ -1,7 +1,9 @@
 local m = {}
 
+local create = require("metapack.utils.ui.create")
+
 function m.showMainMenu(buf, height, width)
-    local logo = require("metapack.utils.ui.create").createLogo()
+    local logo = create.createLogo(width)
     vim.api.nvim_buf_set_lines(buf, 0, -1, true, logo)
 end
 
