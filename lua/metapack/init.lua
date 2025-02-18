@@ -1,16 +1,11 @@
 ---@class initModule
 local m = {
     _portagePackages = {},
-    _portageCommand = "",
     _masonPackages = {},
     _pacmanPackages = {},
-    _pacmanCommand = "",
     _aurPackages = {},
-    _aurCommand = "",
     _aurHelper = "",
     _aptPackages = {},
-    _masonCommand = "",
-    _aptCommand = "",
     _osData = "",
     _rootCommand = "sudo ",
 }
