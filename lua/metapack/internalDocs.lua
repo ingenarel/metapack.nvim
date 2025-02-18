@@ -22,3 +22,7 @@
 ---@field _aurPackages string[]
 ---@field _aurHelper string
 ---@field _aptPackages string[]
+
+---@class UIOpts
+---@field height integer?
+---@field width integer?

@@ -5,10 +5,6 @@ function m.showMainMenu(buf, height, width)
     vim.api.nvim_buf_set_lines(buf, 0, -1, true, logo)
 end
 
----@class UIOpts
----@field height integer?
----@field width integer?
-
 ---@param opts? UIOpts
 function m.showUI(opts)
     if opts == nil then
