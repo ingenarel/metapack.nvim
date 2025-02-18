@@ -1,4 +1,5 @@
 ---@meta
+---@diagnostic disable: duplicate-doc-field
 
 ---@class (exact) PackageData
 ---@field name string The name of the package
