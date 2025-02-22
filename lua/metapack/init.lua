@@ -8,6 +8,7 @@ local m = {
     _aptPackages = {},
     _osData = "",
     _rootCommand = "sudo ",
+    _masonCommand = "",
 }
 
 local packageManager = require("metapack.utils.packageManager")
