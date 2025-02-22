@@ -29,15 +29,15 @@ doesn't, it tries to use mason as fallback
                 "pyright", -- package could be string for simple use
                 "clangd",
                 {
-                    name = "lua-language-server",
+                    "lua-language-server",
                     portage = true,
                     os = "gentoo"
                 }, -- or it could be a table specifying stuff,
                 {
-                    name = "lua-language-server-git",
+                    "lua-language-server-git",
                     aur = true,
                     os = "arch",
-                    execName = "lua-language-server"
+                    exec"lua-language-server"
                 }, -- you can use execName if the package name isn't the same as the executable name
                 "bash-language-server",
                 "termux-language-server",
@@ -45,7 +45,7 @@ doesn't, it tries to use mason as fallback
                 "yaml-language-server",
                 --lsp
                 --dap
-                { name = "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
+                { "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
                 "debugpy",
                 --dap
                 --formatter

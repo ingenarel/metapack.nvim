@@ -53,25 +53,25 @@ function m._catagorizePackages(packageData)
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
-            packageData.execName = packageData.name
+            packageData.execName = packageData[1]
         end
         if packageManager.ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
-                    table.insert(m._portagePackages, packageData.name)
+                    table.insert(m._portagePackages, packageData[1])
                 end
                 if packageData.mason then
-                    table.insert(m._masonPackages, packageData.name)
+                    table.insert(m._masonPackages, packageData[1])
                 end
                 if packageData.pacman then
-                    table.insert(m._pacmanPackages, packageData.name)
+                    table.insert(m._pacmanPackages, packageData[1])
                 end
                 if packageData.aur then
                     m._aurHelper = packageManager.setAurHelper()
-                    table.insert(m._aurPackages, packageData.name)
+                    table.insert(m._aurPackages, packageData[1])
                 end
                 if packageData.apt then
-                    table.insert(m._aptPackages, packageData.name)
+                    table.insert(m._aptPackages, packageData[1])
                 end
             end
         end
