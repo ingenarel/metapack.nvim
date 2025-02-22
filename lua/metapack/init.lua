@@ -55,7 +55,7 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData[1]
         end
-        if packageManager.ifInPath(packageData.execName) == false then
+        if packageData.force == true or packageManager.ifInPath(packageData.execName) == false then
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
