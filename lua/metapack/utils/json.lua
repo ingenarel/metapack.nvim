@@ -25,24 +25,25 @@ function m.tableUpdate(table1, table2)
 end
 
 function m.update(data)
-    local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "w")
+    local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
     local content
     if file == nil then
         m.create()
-        local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
+        file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
         if file ~= nil then
             content = file:read()
             file:close()
         end
     end
-    -- vim.print(pcall(vim.json.decode, content))
     local success = pcall(vim.json.decode, content)
     if success == false then
-        content = { codelldb = { installers = { portage = true } } }
+        content = {}
     end
-    vim.print(m.tableUpdate(content, data))
+    file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "w")
+    if file ~= nil then
+        file:write(vim.json.encode(m.tableUpdate(content, data)))
+        file:close()
+    end
 end
-
-m.update { codelldb = { installers = { mason = true } } }
 
 return m
