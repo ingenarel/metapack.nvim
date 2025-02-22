@@ -110,4 +110,16 @@ function m.ifPackageExistInRepos(packageName, packageManager)
     end
 end
 
+function m.installPackages(packageList, installCommandPrefix)
+    if #packageList > 0 then
+        local installCommand = installCommandPrefix
+
+        for i = 1, #packageList do
+            installCommand = installCommand .. " " .. packageList[i]
+        end
+
+        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. installCommand)
+    end
+end
+
 return m
