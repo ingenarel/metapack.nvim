@@ -12,6 +12,11 @@ local m = {
 }
 
 local packageManager = require("metapack.utils.packageManager")
+local json = require("metapack.utils.json")
+local lowLevel = require("metapack.utils.lowLevel")
+
+local oldPackageDataBase = json.readDataBase()
+local packageDataBase = vim.deepcopy(oldPackageDataBase)
 
 if vim.fn.has("win32") == 0 then -- {{{
     m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
@@ -51,6 +56,17 @@ function m._catagorizePackages(packageData)
             else
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
             end
+        else
+            local success, functionOutput = pcall(function()
+                if packageDataBase[packageData].installed == true then
+                    return true
+                else
+                    return false
+                end
+            end)
+            if success == false or functionOutput == false then
+                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
+            end
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
@@ -88,6 +104,10 @@ function m.ensure_installed(packagesData, doas)
 
     for i = 1, #packagesData do
         m._catagorizePackages(packagesData[i])
+    end
+
+    if vim.deep_equal(oldPackageDataBase, packageDataBase) == false then
+        json.writeDataBase(packageDataBase)
     end
 
     if doas == true then

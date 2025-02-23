@@ -10,39 +10,35 @@ function m.create()
     end
 end
 
-function m.tableUpdate(table1, table2)
-    for key, value in pairs(table2) do
-        if type(value) == "table" then
-            if type(table1[key]) ~= "table" then
-                table1[key] = {}
-            end
-            m.tableUpdate(table1[key], value)
-        else
-            table1[key] = value
-        end
-    end
-    return table1
-end
-
-function m.update(data)
-    local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "w")
-    local content
+function m.readDataBase()
+    local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
+    local fileContent
     if file == nil then
         m.create()
-        local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
+        file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "r")
+    end
+    if file ~= nil then
+        fileContent = file:read("*a")
+        file:close()
+    end
+    local success, functionOutput = pcall(vim.json.decode, fileContent)
+    if success == false then
+        fileContent = {}
+    else
+        fileContent = functionOutput
+    end
+    return fileContent
+end
+
+function m.writeDataBase(table)
+    local outputJson = vim.json.encode(table)
+    if outputJson ~= false then
+        local file = io.open(vim.fn.stdpath("data") .. "/metapack/test.json", "w")
         if file ~= nil then
-            content = file:read()
+            file:write(outputJson)
             file:close()
         end
     end
-    -- vim.print(pcall(vim.json.decode, content))
-    local success = pcall(vim.json.decode, content)
-    if success == false then
-        content = { codelldb = { installers = { portage = true } } }
-    end
-    vim.print(m.tableUpdate(content, data))
 end
-
-m.update { codelldb = { installers = { mason = true } } }
 
 return m
