@@ -30,6 +30,7 @@ end -- }}}
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
+            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and packageManager.ifPackageExistInRepos(packageData, "portage") then
                 packageDataBase = lowLevel.tableUpdate(packageDataBase,
@@ -65,6 +66,7 @@ function m._catagorizePackages(packageData)
             packageData.execName = packageData[1]
         end
         if packageData.force == true or packageManager.ifInPath(packageData.execName) == false then
+            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
