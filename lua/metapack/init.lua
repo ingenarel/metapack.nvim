@@ -13,6 +13,7 @@ local m = {
 
 local packageManager = require("metapack.utils.packageManager")
 local json = require("metapack.utils.json")
+local lowLevel = require("metapack.utils.lowLevel")
 
 if vim.fn.has("win32") == 0 then -- {{{
     m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
@@ -62,9 +63,9 @@ function m._catagorizePackages(packageData)
                 end
             end)
             if success == false then
-                json.writeDataBase(json.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
+                json.writeDataBase(lowLevel.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
             elseif inputDatabase[packageData].installed ~= true then
-                json.writeDataBase(json.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
+                json.writeDataBase(lowLevel.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
             end
         end
     elseif type(packageData) == "table" then

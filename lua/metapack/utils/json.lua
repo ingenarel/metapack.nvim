@@ -30,20 +30,6 @@ function m.readDataBase()
     return fileContent
 end
 
-function m.tableUpdate(table1, table2)
-    for key, value in pairs(table2) do
-        if type(value) == "table" then
-            if type(table1[key]) ~= "table" then -- i don't understand this part since chatgpt created it. i'm gonna remove the comment once i do
-                table1[key] = {}
-            end
-            m.tableUpdate(table1[key], value)
-        else
-            table1[key] = value
-        end
-    end
-    return table1
-end
-
 function m.writeDataBase(table)
     local outputJson = vim.json.encode(table)
     if outputJson ~= false then
