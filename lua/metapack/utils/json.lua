@@ -41,4 +41,19 @@ function m.writeDataBase(table)
     end
 end
 
+function m.updateDataBase(value1, value2, tableToUpdate, referenceTable)
+    local success, functionOutput = pcall(function()
+        if value1 == value2 then
+            return true
+        else
+            return false
+        end
+    end)
+    if success == false or functionOutput == false then
+        return require("metapack.utils.lowLevel").tableUpdate(tableToUpdate, referenceTable)
+    else
+        return tableToUpdate
+    end
+end
+
 return m
