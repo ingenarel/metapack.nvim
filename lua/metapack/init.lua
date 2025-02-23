@@ -32,18 +32,8 @@ function m._catagorizePackages(packageData)
         if packageManager.ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and packageManager.ifPackageExistInRepos(packageData, "portage") then
-                table.insert(m._portagePackages, packageData)
-                local success, functionOutput = pcall(function()
-                    if packageDataBase[packageData].installers.portage == true then
-                        return true
-                    else
-                        return false
-                    end
-                end)
-                if success == false or functionOutput == false then
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
-                end
+                packageDataBase = lowLevel.tableUpdate(packageDataBase,
+                    { [packageData] = { installers = { portage = true } } })
                 return
             elseif string.find(m._osData, "arch") then
                 if packageManager.ifPackageExistInRepos(packageData, "pacman") then
@@ -68,16 +58,7 @@ function m._catagorizePackages(packageData)
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
             end
         else
-            local success, functionOutput = pcall(function()
-                if packageDataBase[packageData].installed == true then
-                    return true
-                else
-                    return false
-                end
-            end)
-            if success == false or functionOutput == false then
-                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
-            end
+            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
@@ -87,19 +68,10 @@ function m._catagorizePackages(packageData)
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
-                    local success, functionOutput = pcall(function()
-                        if packageDataBase[packageData].installers.portage == true then
-                            return true
-                        else
-                            return false
-                        end
-                    end)
-                    if success == false or functionOutput == false then
-                        packageDataBase = lowLevel.tableUpdate(
-                            packageDataBase,
-                            { [packageData[1]] = { installers = { portage = true } } }
-                        )
-                    end
+                    packageDataBase = lowLevel.tableUpdate(
+                        packageDataBase,
+                        { [packageData[1]] = { installers = { portage = true } } }
+                    )
                 end
                 if packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
@@ -116,20 +88,7 @@ function m._catagorizePackages(packageData)
                 end
             end
         else
-            --NOTE: i need to actually copy paste the code atm, if you check commit b5b70f426888, you'll see that i
-            --tried to make a seperate function, but later it didn't work cz to not get the error while trying to check
-            --stuff, i'm using pcall, and then trying to check it as the function param fails cz the key doesn't exist
-            --yet. if this sound gibberish, i'm sorry, read the code, and you'll probably figure it out
-            local success, functionOutput = pcall(function()
-                if packageDataBase[packageData].installed == true then
-                    return true
-                else
-                    return false
-                end
-            end)
-            if success == false or functionOutput == false then
-                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
-            end
+            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
         end
     end
 end
