@@ -15,6 +15,9 @@ local packageManager = require("metapack.utils.packageManager")
 local json = require("metapack.utils.json")
 local lowLevel = require("metapack.utils.lowLevel")
 
+local oldPackageDataBase = json.readDataBase()
+local packageDataBase = vim.deepcopy(oldPackageDataBase)
+
 if vim.fn.has("win32") == 0 then -- {{{
     m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
         :wait().stdout
@@ -25,7 +28,6 @@ end -- }}}
 ---@param packageData (string|PackageData)
 ---@return nil
 function m._catagorizePackages(packageData)
-    local inputDatabase = json.readDataBase()
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
@@ -56,16 +58,14 @@ function m._catagorizePackages(packageData)
             end
         else
             local success, functionOutput = pcall(function()
-                if inputDatabase[packageData].installed == true then
+                if packageDataBase[packageData].installed == true then
                     return true
                 else
                     return false
                 end
             end)
-            if success == false then
-                json.writeDataBase(lowLevel.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
-            elseif inputDatabase[packageData].installed ~= true then
-                json.writeDataBase(lowLevel.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
+            if success == false or functionOutput == false then
+                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
             end
         end
     elseif type(packageData) == "table" then
@@ -104,6 +104,10 @@ function m.ensure_installed(packagesData, doas)
 
     for i = 1, #packagesData do
         m._catagorizePackages(packagesData[i])
+    end
+
+    if vim.deep_equal(oldPackageDataBase, packageDataBase) == false then
+        json.writeDataBase(packageDataBase)
     end
 
     if doas == true then
