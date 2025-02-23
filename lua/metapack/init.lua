@@ -12,6 +12,7 @@ local m = {
 }
 
 local packageManager = require("metapack.utils.packageManager")
+local json = require("metapack.utils.json")
 
 if vim.fn.has("win32") == 0 then -- {{{
     m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
@@ -23,6 +24,7 @@ end -- }}}
 ---@param packageData (string|PackageData)
 ---@return nil
 function m._catagorizePackages(packageData)
+    local inputDatabase = json.readDataBase()
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
@@ -50,6 +52,19 @@ function m._catagorizePackages(packageData)
                 table.insert(m._masonPackages, packageData)
             else
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
+            end
+        else
+            local success, functionOutput = pcall(function()
+                if inputDatabase[packageData].installed == true then
+                    return true
+                else
+                    return false
+                end
+            end)
+            if success == false then
+                json.writeDataBase(json.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
+            elseif inputDatabase[packageData].installed ~= true then
+                json.writeDataBase(json.tableUpdate(inputDatabase, { [packageData] = { installed = true } }))
             end
         end
     elseif type(packageData) == "table" then
