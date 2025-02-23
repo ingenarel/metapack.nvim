@@ -13,6 +13,7 @@ local m = {
 
 local packageManager = require("metapack.utils.packageManager")
 local json = require("metapack.utils.json")
+local lowLevel = require("metapack.utils.lowLevel")
 
 local oldPackageDataBase = json.readDataBase()
 local packageDataBase = vim.deepcopy(oldPackageDataBase)
@@ -56,12 +57,16 @@ function m._catagorizePackages(packageData)
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
             end
         else
-            packageDataBase = json.updateDataBase(
-                packageDataBase[packageData].installed,
-                true,
-                packageDataBase,
-                { [packageData] = { installed = true } }
-            )
+            local success, functionOutput = pcall(function()
+                if packageDataBase[packageData].installed == true then
+                    return true
+                else
+                    return false
+                end
+            end)
+            if success == false or functionOutput == false then
+                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
+            end
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
