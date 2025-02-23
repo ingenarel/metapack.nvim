@@ -33,6 +33,17 @@ function m._catagorizePackages(packageData)
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and packageManager.ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
+                local success, functionOutput = pcall(function()
+                    if packageDataBase[packageData].installers.portage == true then
+                        return true
+                    else
+                        return false
+                    end
+                end)
+                if success == false or functionOutput == false then
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
+                end
                 return
             elseif string.find(m._osData, "arch") then
                 if packageManager.ifPackageExistInRepos(packageData, "pacman") then
@@ -76,6 +87,19 @@ function m._catagorizePackages(packageData)
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
+                    local success, functionOutput = pcall(function()
+                        if packageDataBase[packageData].installers.portage == true then
+                            return true
+                        else
+                            return false
+                        end
+                    end)
+                    if success == false or functionOutput == false then
+                        packageDataBase = lowLevel.tableUpdate(
+                            packageDataBase,
+                            { [packageData[1]] = { installers = { portage = true } } }
+                        )
+                    end
                 end
                 if packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
