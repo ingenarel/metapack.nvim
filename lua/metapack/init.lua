@@ -91,6 +91,17 @@ function m._catagorizePackages(packageData)
                     table.insert(m._aptPackages, packageData[1])
                 end
             end
+        else
+            local success, functionOutput = pcall(function()
+                if packageDataBase[packageData].installed == true then
+                    return true
+                else
+                    return false
+                end
+            end)
+            if success == false or functionOutput == false then
+                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
+            end
         end
     end
 end
