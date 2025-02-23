@@ -92,6 +92,10 @@ function m._catagorizePackages(packageData)
                 end
             end
         else
+            --NOTE: i need to actually copy paste the code atm, if you check commit b5b70f426888, you'll see that i
+            --tried to make a seperate function, but later it didn't work cz to not get the error while trying to check
+            --stuff, i'm using pcall, and then trying to check it as the function param fails cz the key doesn't exist
+            --yet. if this sound gibberish, i'm sorry, read the code, and you'll probably figure it out
             local success, functionOutput = pcall(function()
                 if packageDataBase[packageData].installed == true then
                     return true
