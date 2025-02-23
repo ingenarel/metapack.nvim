@@ -86,6 +86,13 @@ function m._catagorizePackages(packageData)
                     table.insert(m._aptPackages, packageData[1])
                 end
             end
+        else
+            packageDataBase = json.updateDataBase(
+                packageDataBase[packageData].installed,
+                true,
+                packageDataBase,
+                { [packageData] = { installed = true } }
+            )
         end
     end
 end
