@@ -33,30 +33,40 @@ function m._catagorizePackages(packageData)
             packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and packageManager.ifPackageExistInRepos(packageData, "portage") then
-                packageDataBase = lowLevel.tableUpdate(packageDataBase,
-                    { [packageData] = { installers = { portage = true } } })
+                table.insert(m._portagePackages, packageData)
+                packageDataBase =
+                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
                 return
             elseif string.find(m._osData, "arch") then
                 if packageManager.ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { pacman = true } } })
                     return
                 else
                     m._aurHelper = packageManager.setAurHelper()
                     if m._aurHelper ~= "" and packageManager.ifPackageExistInRepos(packageData, m._aurHelper) then
                         table.insert(m._aurPackages, packageData)
+                        packageDataBase =
+                            lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { aur = true } } })
                         return
                     end
                 end
             elseif string.find(m._osData, "debian") then
                 if packageManager.ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { apt = true } } })
                 end
                 return
             end
             if require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
+                packageDataBase =
+                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
             else
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
+                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installable = false } })
             end
         else
             packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
@@ -77,16 +87,24 @@ function m._catagorizePackages(packageData)
                 end
                 if packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
                 end
                 if packageData.pacman then
                     table.insert(m._pacmanPackages, packageData[1])
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { pacman = true } } })
                 end
                 if packageData.aur then
                     m._aurHelper = packageManager.setAurHelper()
                     table.insert(m._aurPackages, packageData[1])
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { aur = true } } })
                 end
                 if packageData.apt then
                     table.insert(m._aptPackages, packageData[1])
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
                 end
             end
         else
