@@ -74,7 +74,6 @@ function m.showPackageMenu(buf, width)
         table.insert(lines, menus[i])
     end
     local graph = create.center(m.createDataBaseGraph(), width)
-    -- local graph = m.createDataBaseGraph()
     for i = 1, #graph do
         table.insert(lines, graph[i])
     end
