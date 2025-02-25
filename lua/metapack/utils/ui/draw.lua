@@ -2,9 +2,79 @@ local m = {}
 
 local create = require("metapack.utils.ui.create")
 
-function m.showMainMenu(buf, height, width)
-    local logo = create.createLogo(width)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, true, logo)
+function m.showMainMenu(buf, width)
+    local lines = {}
+    local logo = create.center(create.logo, width)
+    local menus = create.center(create.menus, width)
+    for i = 1, #menus do
+        table.insert(lines, menus[i])
+    end
+    for i = 1, #logo do
+        table.insert(lines, logo[i])
+    end
+    vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
+end
+
+function m.createDataBaseGraph()
+    local graph = {}
+    local dataBase = require("metapack.utils.json").readDataBase()
+
+    local longestPackageNameLen = 0
+    for key, _ in pairs(dataBase) do
+        if #key > longestPackageNameLen then
+            longestPackageNameLen = #key
+        end
+    end
+    -- Default: { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+    local packageSplit = ""
+    for i = 1, longestPackageNameLen do
+        packageSplit = packageSplit .. "─"
+    end
+
+    local i = 1
+    graph[i] = "╭" .. packageSplit .. "┬" .. "─────────" .. "┬"
+    i = i + 1
+    local packageSpaces = ""
+    for _ = 4, longestPackageNameLen - 1 do
+        packageSpaces = packageSpaces .. " "
+    end
+    graph[i] = "│" .. "Name" .. packageSpaces .. "│" .. "Installed" .. "│"
+    i = i + 1
+    graph[i] = "│" .. packageSplit .. "┼" .. "─────────" .. "┼"
+    i = i + 1
+    for key, _ in pairs(dataBase) do
+        packageSpaces = ""
+        for _ = #key, longestPackageNameLen - 1 do
+            packageSpaces = packageSpaces .. " "
+        end
+        graph[i] = "│" .. key .. packageSpaces .. "│"
+        if dataBase[key].installed == true then
+            graph[i] = graph[i] .. "    y    " .. "│"
+        else
+            graph[i] = graph[i] .. "    x    " .. "│"
+        end
+        i = i + 1
+        graph[i] = "├" .. packageSplit .. "┼" .. "─────────" .. "┼"
+        i = i + 1
+    end
+
+    graph[#graph] = "╰" .. packageSplit .. "┴" .. "─────────" .. "╯"
+
+    return graph
+end
+
+function m.showPackageMenu(buf, width)
+    local lines = {}
+    local menus = create.center(create.menus, width)
+    for i = 1, #menus do
+        table.insert(lines, menus[i])
+    end
+    -- local graph = create.center(m.createDataBaseGraph(), width)
+    local graph = m.createDataBaseGraph()
+    for i = 1, #graph do
+        table.insert(lines, graph[i])
+    end
+    vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
 end
 
 ---@param opts? UIOpts
@@ -34,12 +104,16 @@ function m.showUI(opts)
         border = "rounded",
         style = "minimal",
     })
-    m.showMainMenu(buf, win_height, win_width)
-    vim.bo[buf].modifiable = false
-    vim.api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(buf, "n", "q", "<CMD>q<CR>", { noremap = true, silent = true })
+    m.showMainMenu(buf, win_width)
+    -- vim.bo[buf].modifiable = false
+    vim.keymap.set("n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "q", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "m", function()
+        require("metapack.utils.ui.draw").showMainMenu(buf, win_width)
+    end, { noremap = true, silent = true, buffer = true })
+    vim.keymap.set("n", "p", function()
+        require("metapack.utils.ui.draw").showPackageMenu(buf, win_width)
+    end, { noremap = true, silent = true, buffer = true })
 end
-
-m.showUI()
 
 return m

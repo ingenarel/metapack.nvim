@@ -79,6 +79,28 @@ manager. But it can also use doas.
 
 </details>
 
+### UI:
+
+![Main Menu](images/main-menu.png)
+![Packages](images/package-menu.png)
+
+NOTE: The images might not be the accurate representation of the current UI,
+since it's heavily in development
+
+There is currently a work in progress UI, you can call it in two different
+ways:
+
+
+Use the command:
+```vim
+    :Metapack
+```
+Or call the Lua function
+
+```lua
+    require("metapack.utils.ui.draw").showUI()
+```
+
 ### Current package manager support:
 - [ portage](https://wiki.gentoo.org/wiki/Portage)
 - [ mason](https://github.com/williamboman/mason.nvim)

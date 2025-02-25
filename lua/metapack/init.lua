@@ -146,6 +146,10 @@ function m.ensure_installed(packagesData, doas)
         end
         vim.cmd("MasonInstall" .. m._masonCommand)
     end -- }}}
+
+    vim.api.nvim_create_user_command("Metapack", function()
+        require("metapack.utils.ui.draw").showUI()
+    end, { desc = "Calls the metapack ui" })
 end
 
 return m

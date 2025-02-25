@@ -37,6 +37,7 @@ end
 ---@param packageManager string package manager name
 ---@return boolean # true if exists, false if doesn't
 function m.ifPackageExistInRepos(packageName, packageManager)
+    --TODO: make stuff work in the background without using a blocking call like vim.system():wait()
     local commands = {
         portage = function()
             if vim.fn.executable("eix") then
