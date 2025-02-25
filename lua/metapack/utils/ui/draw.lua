@@ -52,9 +52,9 @@ function m.createDataBaseGraph()
         end
         graph[i] = "│" .. key .. packageSpaces .. "│"
         if dataBase[key].installed == true then
-            graph[i] = graph[i] .. "    y    " .. "│"
+            graph[i] = graph[i] .. "    ✓    " .. "│"
         else
-            graph[i] = graph[i] .. "    x    " .. "│"
+            graph[i] = graph[i] .. "    X    " .. "│"
         end
         i = i + 1
         graph[i] = "├" .. packageSplit .. "┼" .. "─────────" .. "┼"
