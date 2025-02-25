@@ -8,8 +8,9 @@ echo "$(
         echo -e "$paraBreak\n"
         sed -E "
             /<!--.+/d;
+            s/### Usage.+/$paraBreak\nUsage\t\t\t\t\t\t\t   *metapack.nvim-usage*\n/I;
+            s/### UI.+/$paraBreak\nUI\t\t\t\t\t\t\t      *metapack.nvim-ui*\n/I;
             s/### (.+)/$paraBreak\n\1\n/;
-            s/usage.+/Usage\t\t\t\t\t\t\t   *metapack.nvim-usage*\n/I;
             /<\/?details>/d;
             s/.*<summary>\s*(.+)<\/summary>/\1 ~/;
             s/<a href=\".+\">(.+)<\/a>:/\1/;
