@@ -26,9 +26,12 @@ function m.createDataBaseGraph()
         end
     end
     -- Default: { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+
     local packageSplit = ""
+    local lastLine = ""
     for i = 1, longestPackageNameLen do
         packageSplit = packageSplit .. "─"
+        lastLine = lastLine .. " "
     end
 
     local i = 1
@@ -58,7 +61,8 @@ function m.createDataBaseGraph()
         i = i + 1
     end
 
-    graph[#graph] = "╰" .. packageSplit .. "┴" .. "─────────" .. "╯"
+    graph[i - 1] = "╰" .. packageSplit .. "┴" .. "─────────" .. "╯"
+    graph[i] = " " .. lastLine .. " " .. "         " .. " "
 
     return graph
 end
@@ -69,8 +73,8 @@ function m.showPackageMenu(buf, width)
     for i = 1, #menus do
         table.insert(lines, menus[i])
     end
-    -- local graph = create.center(m.createDataBaseGraph(), width)
-    local graph = m.createDataBaseGraph()
+    local graph = create.center(m.createDataBaseGraph(), width)
+    -- local graph = m.createDataBaseGraph()
     for i = 1, #graph do
         table.insert(lines, graph[i])
     end
