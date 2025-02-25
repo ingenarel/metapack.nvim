@@ -29,21 +29,26 @@ function m.createDataBaseGraph()
 
     local packageSplit = ""
     local lastLine = ""
-    for i = 1, longestPackageNameLen do
+    for _ = 1, longestPackageNameLen do
         packageSplit = packageSplit .. "─"
         lastLine = lastLine .. " "
     end
 
     local i = 1
-    graph[i] = "╭" .. packageSplit .. "┬" .. "─────────" .. "┬"
+    graph[i] = "╭"
+        .. packageSplit
+        .. "┬─────────┬───────┬──────┬───┬───┬─────╮"
     i = i + 1
     local packageSpaces = ""
     for _ = 4, longestPackageNameLen - 1 do
         packageSpaces = packageSpaces .. " "
     end
-    graph[i] = "│" .. "Name" .. packageSpaces .. "│" .. "Installed" .. "│"
+    graph[i] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│"
     i = i + 1
-    graph[i] = "│" .. packageSplit .. "┼" .. "─────────" .. "┼"
+    graph[i] = "├"
+        .. packageSplit
+        .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
+
     i = i + 1
     for key, _ in pairs(dataBase) do
         packageSpaces = ""
@@ -52,17 +57,61 @@ function m.createDataBaseGraph()
         end
         graph[i] = "│" .. key .. packageSpaces .. "│"
         if dataBase[key].installed == true then
-            graph[i] = graph[i] .. "    ✓    " .. "│"
+            graph[i] = graph[i] .. "    ✓    │"
         else
-            graph[i] = graph[i] .. "    X    " .. "│"
+            graph[i] = graph[i] .. "    X    │"
+        end
+        local success, functionOutput = pcall(function()
+            return dataBase[key].installers.portage == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. "   ✓   │"
+        else
+            graph[i] = graph[i] .. "       │"
+        end
+        success, functionOutput = pcall(function()
+            return dataBase[key].installers.pacman == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. "   ✓  │"
+        else
+            graph[i] = graph[i] .. "      │"
+        end
+        success, functionOutput = pcall(function()
+            return dataBase[key].installers.aur == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. " ✓ │"
+        else
+            graph[i] = graph[i] .. "   │"
+        end
+        success, functionOutput = pcall(function()
+            return dataBase[key].installers.apt == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. " ✓ │"
+        else
+            graph[i] = graph[i] .. "   │"
+        end
+        success, functionOutput = pcall(function()
+            return dataBase[key].installers.mason == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. "  ✓  │"
+        else
+            graph[i] = graph[i] .. "     │"
         end
         i = i + 1
-        graph[i] = "├" .. packageSplit .. "┼" .. "─────────" .. "┼"
+        graph[i] = "├"
+            .. packageSplit
+            .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
         i = i + 1
     end
 
-    graph[i - 1] = "╰" .. packageSplit .. "┴" .. "─────────" .. "╯"
-    graph[i] = " " .. lastLine .. " " .. "         " .. " "
+    graph[i - 1] = "╰"
+        .. packageSplit
+        .. "┴─────────┴───────┴──────┴───┴───┴─────╯"
+    graph[i] = " " .. lastLine .. "                                        "
 
     return graph
 end
