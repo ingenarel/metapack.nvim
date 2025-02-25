@@ -15,114 +15,13 @@ function m.showMainMenu(buf, width)
     vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
 end
 
-function m.createDataBaseGraph()
-    local graph = {}
-    local dataBase = require("metapack.utils.json").readDataBase()
-
-    local longestPackageNameLen = 0
-    for key, _ in pairs(dataBase) do
-        if #key > longestPackageNameLen then
-            longestPackageNameLen = #key
-        end
-    end
-    -- Default: { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-
-    local packageSplit = ""
-    local lastLine = ""
-    for _ = 1, longestPackageNameLen do
-        packageSplit = packageSplit .. "─"
-        lastLine = lastLine .. " "
-    end
-
-    local i = 1
-    graph[i] = "╭"
-        .. packageSplit
-        .. "┬─────────┬───────┬──────┬───┬───┬─────╮"
-    i = i + 1
-    local packageSpaces = ""
-    for _ = 4, longestPackageNameLen - 1 do
-        packageSpaces = packageSpaces .. " "
-    end
-    graph[i] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│"
-    i = i + 1
-    graph[i] = "├"
-        .. packageSplit
-        .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
-
-    i = i + 1
-    for key, _ in pairs(dataBase) do
-        packageSpaces = ""
-        for _ = #key, longestPackageNameLen - 1 do
-            packageSpaces = packageSpaces .. " "
-        end
-        graph[i] = "│" .. key .. packageSpaces .. "│"
-        if dataBase[key].installed == true then
-            graph[i] = graph[i] .. "    ✓    │"
-        else
-            graph[i] = graph[i] .. "    X    │"
-        end
-        local success, functionOutput = pcall(function()
-            return dataBase[key].installers.portage == true
-        end)
-        if success == true and functionOutput == true then
-            graph[i] = graph[i] .. "   ✓   │"
-        else
-            graph[i] = graph[i] .. "       │"
-        end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.pacman == true
-        end)
-        if success == true and functionOutput == true then
-            graph[i] = graph[i] .. "   ✓  │"
-        else
-            graph[i] = graph[i] .. "      │"
-        end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.aur == true
-        end)
-        if success == true and functionOutput == true then
-            graph[i] = graph[i] .. " ✓ │"
-        else
-            graph[i] = graph[i] .. "   │"
-        end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.apt == true
-        end)
-        if success == true and functionOutput == true then
-            graph[i] = graph[i] .. " ✓ │"
-        else
-            graph[i] = graph[i] .. "   │"
-        end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.mason == true
-        end)
-        if success == true and functionOutput == true then
-            graph[i] = graph[i] .. "  ✓  │"
-        else
-            graph[i] = graph[i] .. "     │"
-        end
-        i = i + 1
-        graph[i] = "├"
-            .. packageSplit
-            .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
-        i = i + 1
-    end
-
-    graph[i - 1] = "╰"
-        .. packageSplit
-        .. "┴─────────┴───────┴──────┴───┴───┴─────╯"
-    graph[i] = " " .. lastLine .. "                                        "
-
-    return graph
-end
-
 function m.showPackageMenu(buf, width)
     local lines = {}
     local menus = create.center(create.menus, width)
     for i = 1, #menus do
         table.insert(lines, menus[i])
     end
-    local graph = create.center(m.createDataBaseGraph(), width)
+    local graph = create.center(create.createDataBaseGraph(), width)
     for i = 1, #graph do
         table.insert(lines, graph[i])
     end
