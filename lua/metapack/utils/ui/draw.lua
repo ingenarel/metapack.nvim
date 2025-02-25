@@ -12,7 +12,9 @@ function m.showMainMenu(buf, width)
     for i = 1, #logo do
         table.insert(lines, logo[i])
     end
+    vim.bo[buf].modifiable = true
     vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
+    vim.bo[buf].modifiable = false
 end
 
 function m.showPackageMenu(buf, width)
@@ -25,7 +27,9 @@ function m.showPackageMenu(buf, width)
     for i = 1, #graph do
         table.insert(lines, graph[i])
     end
+    vim.bo[buf].modifiable = true
     vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
+    vim.bo[buf].modifiable = false
 end
 
 ---@param opts? UIOpts
@@ -56,7 +60,6 @@ function m.showUI(opts)
         style = "minimal",
     })
     m.showMainMenu(buf, win_width)
-    -- vim.bo[buf].modifiable = false
     vim.keymap.set("n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "q", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "m", function()
