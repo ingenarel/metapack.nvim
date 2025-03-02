@@ -150,6 +150,13 @@ function m.ensure_installed(packagesData, doas)
     vim.api.nvim_create_user_command("Metapack", function()
         require("metapack.utils.ui.draw").showUI()
     end, { desc = "Calls the metapack ui" })
+
+    vim.api.nvim_set_hl(0, "MetapackMenu", { fg = "#B622FF" })
+    vim.api.nvim_set_hl(0, "MetapackMenuKey", { fg = "#FF49D3" })
+    vim.api.nvim_set_hl(0, "MetapackPackageGraphBorders", { fg = "#4AFFFD" })
+    vim.api.nvim_set_hl(0, "MetapackPackageName", { fg = "#FFF12B" })
+    vim.api.nvim_set_hl(0, "MetapackTick", { fg = "#4AFF63" })
+    vim.api.nvim_set_hl(0, "MetapackCross", { fg = "#FF0000" })
 end
 
 return m

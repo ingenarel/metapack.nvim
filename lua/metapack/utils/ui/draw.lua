@@ -32,6 +32,8 @@ function m.showPackageMenu(buf, width)
     vim.bo[buf].modifiable = false
 end
 
+function m.showInstallationMenu() end
+
 ---@param opts? UIOpts
 function m.showUI(opts)
     if opts == nil then
@@ -59,6 +61,13 @@ function m.showUI(opts)
         border = "rounded",
         style = "minimal",
     })
+
+    vim.fn.matchadd("MetapackMenu", "\\[.\\]\\S\\+")
+    vim.fn.matchadd("MetapackMenuKey", "\\[.\\]")
+    vim.fn.matchadd("MetapackPackageGraphBorders", "╭\\|─\\|┬\\|╮\\|├\\|┼\\|┤\\|╰\\|┴\\|╯\\|│")
+    vim.fn.matchadd("MetapackTick", "✓")
+    vim.fn.matchadd("MetapackCross", "")
+
     m.showMainMenu(buf, win_width)
     vim.keymap.set("n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "q", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })

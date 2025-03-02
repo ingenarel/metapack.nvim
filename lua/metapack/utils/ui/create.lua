@@ -52,11 +52,13 @@ function m.createDataBaseGraph()
             packageSpaces = packageSpaces .. " "
         end
         graph[i] = "│" .. key .. packageSpaces .. "│"
+        vim.fn.matchadd("MetapackPackageName", key)
         if dataBase[key].installed == true then
             graph[i] = graph[i] .. "    ✓    │"
         else
-            graph[i] = graph[i] .. "    X    │"
+            graph[i] = graph[i] .. "        │"
         end
+
         local success, functionOutput = pcall(function()
             return dataBase[key].installers.portage == true
         end)
