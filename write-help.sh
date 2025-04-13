@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 paraBreak="$(for ((i = 0; i < 78; i++)); do echo -n "="; done)"
 
