@@ -38,7 +38,7 @@ doesn't, it tries to use mason as fallback
                         "lua-language-server-git",
                         aur = true,
                         os = "arch",
-                        exec"lua-language-server"
+                        exec = "lua-language-server"
                     }, -- you can use execName if the package name isn't the same as the executable name
                     "bash-language-server",
                     "termux-language-server",
