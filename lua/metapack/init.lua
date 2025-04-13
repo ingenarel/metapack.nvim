@@ -113,22 +113,20 @@ function m._catagorizePackages(packageData)
     end
 end
 
----@param packagesData (string|PackageData)[]
----@param doas boolean?
-function m.ensure_installed(packagesData, doas)
+function m.setup(opts)
     -- NOTE: use this after i try to implement windows and mac{{{
     -- if osData.sysname == "Linux" then
     -- end}}}
 
-    for i = 1, #packagesData do
-        m._catagorizePackages(packagesData[i])
+    for i = 1, #opts.ensure_installed do
+        m._catagorizePackages(opts.ensure_installed[i])
     end
 
     if vim.deep_equal(oldPackageDataBase, packageDataBase) == false then
         json.writeDataBase(packageDataBase)
     end
 
-    if doas == true then
+    if opts.doas == true then
         m._rootCommand = "doas "
     end
 
