@@ -49,8 +49,8 @@ function m.showUI(opts)
     ---@type integer
     local win_height = math.floor(vim.o.lines / 100 * opts.height)
     ---@type integer
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_open_win(buf, true, {
+    local bufID = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_open_win(bufID, true, {
         relative = "editor",
         width = win_width,
         height = win_height,
@@ -59,15 +59,17 @@ function m.showUI(opts)
         border = "rounded",
         style = "minimal",
     })
-    m.showMainMenu(buf, win_width)
+    m.showMainMenu(bufID, win_width)
     vim.keymap.set("n", "<ESC>", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "q", "<CMD>q<CR>", { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "m", function()
-        require("metapack.utils.ui.draw").showMainMenu(buf, win_width)
+        require("metapack.utils.ui.draw").showMainMenu(bufID, win_width)
     end, { noremap = true, silent = true, buffer = true })
     vim.keymap.set("n", "p", function()
-        require("metapack.utils.ui.draw").showPackageMenu(buf, win_width)
+        require("metapack.utils.ui.draw").showPackageMenu(bufID, win_width)
     end, { noremap = true, silent = true, buffer = true })
+    vim.fn.matchadd("metapackKeymap", "\\[.\\]")
+    vim.fn.matchadd("metapackBracket", "\\(\\[\\|\\]\\)")
 end
 
 return m
