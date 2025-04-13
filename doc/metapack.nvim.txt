@@ -30,36 +30,38 @@ Using lazy.nvim ~
             },
         },
         config = function()
-            require("metapack").ensure_installed {
-                --lsp
-                "pyright", -- package could be string for simple use
-                "clangd",
-                {
-                    "lua-language-server",
-                    portage = true,
-                    os = "gentoo"
-                }, -- or it could be a table specifying stuff,
-                {
-                    "lua-language-server-git",
-                    aur = true,
-                    os = "arch",
-                    exec"lua-language-server"
-                }, -- you can use execName if the package name isn't the same as the executable name
-                "bash-language-server",
-                "termux-language-server",
-                "ltex-ls",
-                "yaml-language-server",
-                --lsp
-                --dap
-                { "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
-                "debugpy",
-                --dap
-                --formatter
-                "black",
-                "stylua",
-                "clang-format",
-                "beautysh",
-                --formatter
+            require("metapack").setup{
+                ensure_installed = {
+                    --lsp
+                    "pyright", -- package could be string for simple use
+                    "clangd",
+                    {
+                        "lua-language-server",
+                        portage = true,
+                        os = "gentoo"
+                    }, -- or it could be a table specifying stuff,
+                    {
+                        "lua-language-server-git",
+                        aur = true,
+                        os = "arch",
+                        exec = "lua-language-server"
+                    }, -- you can use execName if the package name isn't the same as the executable name
+                    "bash-language-server",
+                    "termux-language-server",
+                    "ltex-ls",
+                    "yaml-language-server",
+                    --lsp
+                    --dap
+                    { "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
+                    "debugpy",
+                    --dap
+                    --formatter
+                    "black",
+                    "stylua",
+                    "clang-format",
+                    "beautysh",
+                    --formatter
+                }
             }
         end,
     }
@@ -75,12 +77,13 @@ Metapack works with sudo when trying to interact with your package
 manager. But it can also use doas.
 
 >lua
-    require("metapack").ensure_installed(
-        {
-            --packages
+    require("metapack").setup{
+        ensure_installed =(
+            {
+                --packages
+            },
+            doas = true
         }
-        true
-    )
 <
 
 
