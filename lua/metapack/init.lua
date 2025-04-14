@@ -148,9 +148,6 @@ function m.setup(opts)
     vim.api.nvim_create_user_command("Metapack", function()
         require("metapack.utils.ui.draw").showUI()
     end, { desc = "Calls the metapack ui" })
-    vim.api.nvim_set_hl(0, "metapackKeymap", { fg = "#f91176" })
-    vim.api.nvim_set_hl(0, "metapackBracket", { fg = "#f911ea" })
-    vim.api.nvim_set_hl(0, "metapackKeymapRest", { fg = "#9511f9" })
 end
 
 return m
