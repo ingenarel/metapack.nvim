@@ -68,6 +68,7 @@ function m.showUI(opts)
     vim.keymap.set("n", "p", function()
         require("metapack.utils.ui.draw").showPackageMenu(bufID, win_width)
     end, { noremap = true, silent = true, buffer = true })
+    vim.fn.matchadd("metapackKeymapRest", "\\[.\\]\\S\\+")
     vim.fn.matchadd("metapackKeymap", "\\[.\\]")
     vim.fn.matchadd("metapackBracket", "\\(\\[\\|\\]\\)")
 end
