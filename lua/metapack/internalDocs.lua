@@ -10,6 +10,7 @@
 ---@field pacman boolean? if true, install using pacman
 ---@field aur boolean? if true, install using an aur helper
 ---@field apt boolean? if true, install using apt
+---@field nix boolean? if true, install using nix
 ---@field force boolean? if true, force install the package every time (useful for debugging)
 
 ---@class initModule the main init module
