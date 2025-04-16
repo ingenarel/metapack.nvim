@@ -102,6 +102,17 @@ function m.ifPackageExistInRepos(packageName, packageManager)
                 return false
             end
         end,
+
+        nix = function()
+            if
+                vim.system({ "sh", "-c", "nix-search -n " .. packageName .. " | grep -E '^" .. packageName .. " '" })
+                    :wait().code == 0
+            then
+                return true
+            else
+                return false
+            end
+        end,
     }
 
     if commands[packageManager] then
