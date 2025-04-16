@@ -149,7 +149,7 @@ function m.setup(opts)
     )
     packageManager.installPackages(m._pacmanPackages, m._rootCommand .. " pacman -S ")
     packageManager.installPackages(m._aurPackages, m._aurHelper .. " -S ")
-    packageManager.installPackages(m._aurPackages, m._rootCommand .. " apt-get install ")
+    packageManager.installPackages(m._aptPackages, m._rootCommand .. " apt-get install ")
 
     if #m._masonPackages > 0 then -- {{{
         for i = 1, #m._masonPackages do
