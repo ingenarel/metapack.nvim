@@ -6,6 +6,7 @@ local m = {
     _aurPackages = {},
     _aurHelper = "",
     _aptPackages = {},
+    _nixPackages = {},
     _osData = "",
     _rootCommand = "sudo ",
     _masonCommand = "",
