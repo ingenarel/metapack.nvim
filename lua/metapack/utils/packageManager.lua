@@ -129,8 +129,7 @@ function m.installPackages(packageList, installCommandPrefix)
         for i = 1, #packageList do
             installCommand = installCommand .. " " .. packageList[i]
         end
-
-        vim.cmd("bot split|" .. "resize 10|" .. "terminal " .. installCommand)
+        require("smart-floatterm").open(installCommand)
     end
 end
 
