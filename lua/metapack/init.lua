@@ -60,6 +60,13 @@ function m._catagorizePackages(packageData)
                         lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { apt = true } } })
                 end
                 return
+            elseif string.find(m._osData, "nixos") then
+                if packageManager.ifPackageExistInRepos(packageData, "nix") then
+                    table.insert(m._nixPackages, packageData)
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
+                end
+                return
             end
             if require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
