@@ -114,6 +114,11 @@ function m._catagorizePackages(packageData)
                     packageDataBase =
                         lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
                 end
+                if packageData.nix then
+                    table.insert(m._nixPackages, packageData[1])
+                    packageDataBase =
+                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
+                end
             end
         else
             packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
