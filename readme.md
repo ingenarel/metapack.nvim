@@ -145,4 +145,7 @@ Or call the Lua function
         packages, but instead they are USE flags in the clang package
 
 </details>
+
+### TODOS:
+- [ ] add cleanup functions
 <!-- vim: set textwidth=78: -->
