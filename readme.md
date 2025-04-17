@@ -22,6 +22,10 @@ doesn't, it tries to use mason as fallback
                 "williamboman/mason.nvim", -- will try to make this optional in future
                 config = true,
             },
+            {
+                "ingenarel/smart-floatterm.nvim", -- terminal plugin that i made to use with my other plugins
+                config = true,
+            }
         },
         config = function()
             require("metapack").setup{
