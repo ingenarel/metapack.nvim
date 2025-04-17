@@ -72,6 +72,7 @@ function m.showUI(opts)
     vim.fn.matchadd("metapackKeymap", "\\[.\\]")
     vim.fn.matchadd("metapackBracket", "\\(\\[\\|\\]\\)")
     vim.fn.matchadd("metapackPackageBorders", "\\(╭\\|─\\|┬\\|╮\\|├\\|┼\\|┤\\|│\\|╰\\|┴\\|╯\\)")
+    vim.fn.matchadd("metapackTick", "✓")
 end
 
 return m
