@@ -19,7 +19,7 @@ doesn't, it tries to use mason as fallback
         "ingenarel/metapack.nvim",
         dependencies = {
             {
-                "williamboman/mason.nvim",
+                "williamboman/mason.nvim", -- will try to make this optional in future
                 config = true,
             },
         },
