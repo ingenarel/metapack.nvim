@@ -10,6 +10,7 @@ local m = {
     _osData = "",
     _rootCommand = "sudo ",
     _masonCommand = "",
+    _enableMason = false,
 }
 
 local packageManager = require("metapack.utils.packageManager")
@@ -68,7 +69,7 @@ function m._catagorizePackages(packageData)
                 end
                 return
             end
-            if require("mason-registry").has_package(packageData) then
+            if m._enableMason == true and require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
                 packageDataBase =
                     lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
@@ -93,7 +94,7 @@ function m._catagorizePackages(packageData)
                         { [packageData[1]] = { installers = { portage = true } } }
                     )
                 end
-                if packageData.mason then
+                if m._enableMason == true and packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
                     packageDataBase =
                         lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
@@ -130,6 +131,9 @@ function m.setup(opts)
     -- NOTE: use this after i try to implement windows and mac{{{
     -- if osData.sysname == "Linux" then
     -- end}}}
+    m._enableMason, _ = pcall(function()
+        require("mason")
+    end)
 
     for i = 1, #opts.ensure_installed do
         m._catagorizePackages(opts.ensure_installed[i])
@@ -151,7 +155,7 @@ function m.setup(opts)
     packageManager.installPackages(m._aurPackages, m._aurHelper .. " -S ")
     packageManager.installPackages(m._aptPackages, m._rootCommand .. " apt-get install ")
 
-    if #m._masonPackages > 0 then -- {{{
+    if m._enableMason == true and #m._masonPackages > 0 then -- {{{
         for i = 1, #m._masonPackages do
             m._masonCommand = m._masonCommand .. " " .. m._masonPackages[i]
         end
