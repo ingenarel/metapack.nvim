@@ -10,6 +10,7 @@ local m = {
     _osData = "",
     _rootCommand = "sudo ",
     _masonCommand = "",
+    _enableLuix = false,
     _enableMason = false,
 }
 
@@ -133,6 +134,9 @@ function m.setup(opts)
     -- end}}}
     m._enableMason, _ = pcall(function()
         require("mason")
+    end)
+    m._enableLuix, _ = pcall(function()
+        require("luix")
     end)
 
     for i = 1, #opts.ensure_installed do
