@@ -64,7 +64,7 @@ function m._catagorizePackages(packageData)
                 return
             elseif string.find(m._osData, "nixos") then
                 if packageManager.ifPackageExistInRepos(packageData, "nix") then
-                    table.insert(m._nixPackages, packageData)
+                    packageManager.insertPacakges(packageData, m._nixPackages, "nix")
                     packageDataBase =
                         lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
                 end
@@ -165,6 +165,25 @@ function m.setup(opts)
         end
         vim.cmd("MasonInstall" .. m._masonCommand)
     end -- }}}
+
+    if m._enableLuix and #m._nixPackages > 0 then
+        for key, value in pairs(packageDataBase) do
+            local success, output = pcall(function()
+                return value.installers.nix
+            end)
+            if value.installed and success and output then
+                table.insert(m._nixPackages, key)
+            end
+        end
+        local luix = require("luix")
+        luix.saveFile(
+            luix.parse({ "pkgs", "inputs", "..." }, { systemPackages = m._nixPackages }),
+            "~/.config/nixos-config/configs/programs/neovim/metapack_test.nix"
+        )
+        require("smart-floatterm").open(
+            "git -C $HOME/.config/nixos-config add $HOME/.config/nixos-config/configs/programs/neovim/metapack_test.nix && sudo nixos-rebuild switch --flake $HOME/.config/nixos-config#NixOSBaby"
+        )
+    end
 
     vim.api.nvim_create_user_command("Metapack", function()
         require("metapack.utils.ui.draw").showUI()
