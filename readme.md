@@ -1,4 +1,4 @@
-Ever installed plugins using mason and thought "hmm. I wish I could just use
+Ever installed plugins using mason and thought "Hmm... I wish I could just use
 my system package manager for this too" Well say no more my dear cause
 metapack.nvim is here!
 
@@ -114,6 +114,7 @@ Or call the Lua function
 - [󰣇 pacman](https://wiki.archlinux.org/title/Pacman)
 - [󰣇 paru](https://github.com/Morganamilo/paru)
 - [󰣚 apt](https://en.wikipedia.org/wiki/APT_(software))
+- [󱄅 nix](https://nixos.org)
 
 ### GOALS:
 <details>
@@ -143,7 +144,8 @@ Or call the Lua function
     - [x] ~package manager~
 
 - Features:
-    - [ ] A logger for managing, cleaning, deleting and updating packages.
+    - [x] A logger for managing, cleaning, deleting and updating packages.
+    - [ ] Actually implement the cleaning, deleting and updating thing
     - [ ] Work with gentoo USE flags
         some stuff in gentoo, like codelldb and clang-format, are not separate
         packages, but instead they are USE flags in the clang package
