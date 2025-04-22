@@ -66,7 +66,7 @@ function m._catagorizePackages(packageData)
                 end
                 return
             end
-            if m._enableMason == true and require("mason-registry").has_package(packageData) then
+            if m._enableMason and require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
                 lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
             else
@@ -80,14 +80,14 @@ function m._catagorizePackages(packageData)
         if packageData.execName == nil then
             packageData.execName = packageData[1]
         end
-        if packageData.force == true or packageManager.ifInPath(packageData.execName) == false then
+        if packageData.force or packageManager.ifInPath(packageData.execName) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
                 end
-                if m._enableMason == true and packageData.mason then
+                if m._enableMason and packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
                 end
@@ -134,7 +134,7 @@ function m.setup(opts)
         json.writeDataBase(packageDataBase)
     end
 
-    if opts.doas == true then
+    if opts.doas then
         m._rootCommand = "doas "
     end
 
@@ -146,7 +146,7 @@ function m.setup(opts)
     packageManager.installPackages(m._aurPackages, m._aurHelper .. " -S ")
     packageManager.installPackages(m._aptPackages, m._rootCommand .. " apt-get install ")
 
-    if m._enableMason == true and #m._masonPackages > 0 then -- {{{
+    if m._enableMason and #m._masonPackages > 0 then -- {{{
         for i = 1, #m._masonPackages do
             m._masonCommand = m._masonCommand .. " " .. m._masonPackages[i]
         end

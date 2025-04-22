@@ -52,7 +52,7 @@ function m.createDataBaseGraph()
             packageSpaces = packageSpaces .. " "
         end
         graph[i] = "│" .. key .. packageSpaces .. "│"
-        if dataBase[key].installed == true then
+        if dataBase[key].installed then
             graph[i] = graph[i] .. "    ✓    │"
         else
             graph[i] = graph[i] .. "    X    │"
@@ -60,7 +60,7 @@ function m.createDataBaseGraph()
         local success, functionOutput = pcall(function()
             return dataBase[key].installers.portage == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. "   ✓   │"
         else
             graph[i] = graph[i] .. "       │"
@@ -68,7 +68,7 @@ function m.createDataBaseGraph()
         success, functionOutput = pcall(function()
             return dataBase[key].installers.pacman == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. "   ✓  │"
         else
             graph[i] = graph[i] .. "      │"
@@ -76,7 +76,7 @@ function m.createDataBaseGraph()
         success, functionOutput = pcall(function()
             return dataBase[key].installers.aur == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"
@@ -84,7 +84,7 @@ function m.createDataBaseGraph()
         success, functionOutput = pcall(function()
             return dataBase[key].installers.apt == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"
@@ -92,7 +92,7 @@ function m.createDataBaseGraph()
         success, functionOutput = pcall(function()
             return dataBase[key].installers.mason == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. "  ✓  │"
         else
             graph[i] = graph[i] .. "     │"
@@ -100,7 +100,7 @@ function m.createDataBaseGraph()
         success, functionOutput = pcall(function()
             return dataBase[key].installers.nix == true
         end)
-        if success == true and functionOutput == true then
+        if success and functionOutput then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"

@@ -26,7 +26,7 @@ function m.ifInPath(packageName, executableName)
     if executableName == nil then
         executableName = packageName
     end
-    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) == true then
+    if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) then
         return true
     end
     return false
