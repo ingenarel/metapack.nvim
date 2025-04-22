@@ -64,6 +64,8 @@ doesn't, it tries to use mason as fallback
         end,
     }
 ```
+You can take a look at my current setup [here](https://github.com/ingenarel/nixos-config/blob/master/configs/programs/neovim/nvim/lua/plugins/metapack.lua)
+
 </details>
 
 ### Tips:
