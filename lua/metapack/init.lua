@@ -33,97 +33,83 @@ end -- }}}
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
-            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
+            lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
             if string.find(m._osData, "gentoo") and packageManager.ifPackageExistInRepos(packageData, "portage") then
                 table.insert(m._portagePackages, packageData)
-                packageDataBase =
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
+                lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
                 return
             elseif string.find(m._osData, "arch") then
                 if packageManager.ifPackageExistInRepos(packageData, "pacman") then
                     table.insert(m._pacmanPackages, packageData)
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { pacman = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { pacman = true } } })
                     return
                 else
                     m._aurHelper = packageManager.setAurHelper()
                     if m._aurHelper ~= "" and packageManager.ifPackageExistInRepos(packageData, m._aurHelper) then
                         table.insert(m._aurPackages, packageData)
-                        packageDataBase =
-                            lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { aur = true } } })
+                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { aur = true } } })
                         return
                     end
                 end
             elseif string.find(m._osData, "debian") then
                 if packageManager.ifPackageExistInRepos(packageData, "apt") then
                     table.insert(m._aptPackages, packageData)
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { apt = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { apt = true } } })
                 end
                 return
             elseif string.find(m._osData, "nixos") then
                 if packageManager.ifPackageExistInRepos(packageData, "nix") then
                     packageManager.insertPackages(packageData, m._nixPackages, "nix")
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
                 end
                 return
             end
             if m._enableMason == true and require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
-                packageDataBase =
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
+                lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
             else
                 vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
-                packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installable = false } })
+                lowLevel.tableUpdate(packageDataBase, { [packageData] = { installable = false } })
             end
         else
-            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
+            lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
         end
     elseif type(packageData) == "table" then
         if packageData.execName == nil then
             packageData.execName = packageData[1]
         end
         if packageData.force == true or packageManager.ifInPath(packageData.execName) == false then
-            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
+            lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
             if packageData.os == nil or string.find(m._osData, packageData.os) then
                 if packageData.portage then
                     table.insert(m._portagePackages, packageData[1])
-                    packageDataBase = lowLevel.tableUpdate(
-                        packageDataBase,
-                        { [packageData[1]] = { installers = { portage = true } } }
-                    )
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
                 end
                 if m._enableMason == true and packageData.mason then
                     table.insert(m._masonPackages, packageData[1])
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
                 end
                 if packageData.pacman then
                     table.insert(m._pacmanPackages, packageData[1])
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { pacman = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { pacman = true } } })
                 end
                 if packageData.aur then
                     m._aurHelper = packageManager.setAurHelper()
                     table.insert(m._aurPackages, packageData[1])
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { aur = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { aur = true } } })
                 end
                 if packageData.apt then
                     table.insert(m._aptPackages, packageData[1])
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
                 end
                 if packageData.nix then
                     table.insert(m._nixPackages, packageData[1])
-                    packageDataBase =
-                        lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
+                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
                 end
             end
         else
-            packageDataBase = lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
+            lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
         end
     end
 end

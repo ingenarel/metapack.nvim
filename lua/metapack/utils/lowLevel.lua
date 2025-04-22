@@ -11,7 +11,6 @@ function m.tableUpdate(table1, table2)
             table1[key] = value
         end
     end
-    return table1
 end
 
 return m
