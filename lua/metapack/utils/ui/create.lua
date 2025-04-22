@@ -57,50 +57,38 @@ function m.createDataBaseGraph()
         else
             graph[i] = graph[i] .. "    X    │"
         end
-        local success, functionOutput = pcall(function()
-            return dataBase[key].installers.portage == true
-        end)
-        if success and functionOutput then
+        local function checkIfInstalled(packageName, packageManagerName)
+            local success, functionOutput = pcall(function()
+                return dataBase[packageName].installers[packageManagerName] == true
+            end)
+            return success == true and functionOutput == true
+        end
+        if checkIfInstalled(key, "portage") then
             graph[i] = graph[i] .. "   ✓   │"
         else
             graph[i] = graph[i] .. "       │"
         end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.pacman == true
-        end)
-        if success and functionOutput then
+        if checkIfInstalled(key, "pacman") then
             graph[i] = graph[i] .. "   ✓  │"
         else
             graph[i] = graph[i] .. "      │"
         end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.aur == true
-        end)
-        if success and functionOutput then
+        if checkIfInstalled(key, "aur") then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"
         end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.apt == true
-        end)
-        if success and functionOutput then
+        if checkIfInstalled(key, "apt") then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"
         end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.mason == true
-        end)
-        if success and functionOutput then
+        if checkIfInstalled(key, "mason") then
             graph[i] = graph[i] .. "  ✓  │"
         else
             graph[i] = graph[i] .. "     │"
         end
-        success, functionOutput = pcall(function()
-            return dataBase[key].installers.nix == true
-        end)
-        if success and functionOutput then
+        if checkIfInstalled(key, "nix") then
             graph[i] = graph[i] .. " ✓ │"
         else
             graph[i] = graph[i] .. "   │"
