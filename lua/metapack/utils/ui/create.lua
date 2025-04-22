@@ -33,17 +33,17 @@ function m.createDataBaseGraph()
     local i = 1
     graph[i] = "╭"
         .. packageSplit
-        .. "┬─────────┬───────┬──────┬───┬───┬─────╮"
+        .. "┬─────────┬───────┬──────┬───┬───┬─────┬───╮"
     i = i + 1
     local packageSpaces = ""
     for _ = 4, longestPackageNameLen - 1 do
         packageSpaces = packageSpaces .. " "
     end
-    graph[i] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│"
+    graph[i] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│Nix│"
     i = i + 1
     graph[i] = "├"
         .. packageSplit
-        .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
+        .. "┼─────────┼───────┼──────┼───┼───┼─────┼───┤"
 
     i = i + 1
     for key, _ in pairs(dataBase) do
@@ -97,16 +97,24 @@ function m.createDataBaseGraph()
         else
             graph[i] = graph[i] .. "     │"
         end
+        success, functionOutput = pcall(function()
+            return dataBase[key].installers.nix == true
+        end)
+        if success == true and functionOutput == true then
+            graph[i] = graph[i] .. " ✓ │"
+        else
+            graph[i] = graph[i] .. "   │"
+        end
         i = i + 1
         graph[i] = "├"
             .. packageSplit
-            .. "┼─────────┼───────┼──────┼───┼───┼─────┤"
+            .. "┼─────────┼───────┼──────┼───┼───┼─────┼───┤"
         i = i + 1
     end
 
     graph[i - 1] = "╰"
         .. packageSplit
-        .. "┴─────────┴───────┴──────┴───┴───┴─────╯"
+        .. "┴─────────┴───────┴──────┴───┴───┴─────┴───╯"
     graph[i] = " " .. lastLine .. "                                        "
 
     return graph
