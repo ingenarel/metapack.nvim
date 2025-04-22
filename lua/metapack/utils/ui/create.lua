@@ -46,6 +46,14 @@ function m.createDataBaseGraph()
         .. "┼─────────┼───────┼──────┼───┼───┼─────┼───┤"
 
     i = i + 1
+
+    local function checkIfInstalled(packageName, packageManagerName)
+        local success, functionOutput = pcall(function()
+            return dataBase[packageName].installers[packageManagerName] == true
+        end)
+        return success == true and functionOutput == true
+    end
+
     for key, _ in pairs(dataBase) do
         packageSpaces = ""
         for _ = #key, longestPackageNameLen - 1 do
@@ -56,12 +64,6 @@ function m.createDataBaseGraph()
             graph[i] = graph[i] .. "    ✓    │"
         else
             graph[i] = graph[i] .. "    X    │"
-        end
-        local function checkIfInstalled(packageName, packageManagerName)
-            local success, functionOutput = pcall(function()
-                return dataBase[packageName].installers[packageManagerName] == true
-            end)
-            return success == true and functionOutput == true
         end
         if checkIfInstalled(key, "portage") then
             graph[i] = graph[i] .. "   ✓   │"
