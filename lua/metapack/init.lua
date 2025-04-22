@@ -30,6 +30,7 @@ end -- }}}
 
 ---@param packageData (string|PackageData)
 ---@return nil
+---@nodoc FIXME: this function is an unoptimized peice of shit, and i need to rewrite it when i'm not thinking about killing myself
 function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
