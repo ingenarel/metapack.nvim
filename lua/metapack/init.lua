@@ -191,7 +191,7 @@ function m.setup(opts)
                 .. " nixos-rebuild switch --flake "
                 .. opts.nixFlakeDir
                 .. "#"
-                .. os.getenv("HOST")
+                .. vim.fn.hostname()
         )
     end
 
