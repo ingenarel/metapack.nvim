@@ -172,7 +172,7 @@ function m.setup(opts)
                 return value.installers.nix
             end)
             if value.installed and success and output then
-                table.insert(m._nixPackages, key)
+                packageManager.insertPackages(key, m._nixPackages, "nix")
             end
         end
         local luix = require("luix")
