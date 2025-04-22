@@ -34,15 +34,9 @@ end
 
 ---@param opts? UIOpts
 function m.showUI(opts)
-    if opts == nil then
-        opts = {}
-    end
-    if opts.width == nil then
-        opts.width = 80
-    end
-    if opts.height == nil then
-        opts.height = 80
-    end
+    opts = opts or {}
+    opts.width = opts.width or 80
+    opts.height = opts.height or 80
 
     ---@type integer
     local win_width = math.floor(vim.o.columns / 100 * opts.width)

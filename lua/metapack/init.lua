@@ -77,9 +77,7 @@ function m._catagorizePackages(packageData)
             lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
         end
     elseif type(packageData) == "table" then
-        if packageData.execName == nil then
-            packageData.execName = packageData[1]
-        end
+        packageData.execName = packageData.execName or packageData[1]
         if packageData.force or packageManager.ifInPath(packageData.execName) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
             if packageData.os == nil or string.find(m._osData, packageData.os) then

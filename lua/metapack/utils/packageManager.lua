@@ -23,9 +23,7 @@ end
 ---@param packageName string the package name
 ---@param executableName string? optional executable name if the package name isn't the same as the executable name
 function m.ifInPath(packageName, executableName)
-    if executableName == nil then
-        executableName = packageName
-    end
+    executableName = executableName or packageName
     if vim.fn.executable(executableName) == 1 or require("mason-registry").is_installed(packageName) then
         return true
     end
