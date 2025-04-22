@@ -64,7 +64,7 @@ function m._catagorizePackages(packageData)
                 return
             elseif string.find(m._osData, "nixos") then
                 if packageManager.ifPackageExistInRepos(packageData, "nix") then
-                    packageManager.insertPacakges(packageData, m._nixPackages, "nix")
+                    packageManager.insertPackages(packageData, m._nixPackages, "nix")
                     packageDataBase =
                         lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
                 end

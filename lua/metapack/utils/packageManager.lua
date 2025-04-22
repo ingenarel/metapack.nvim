@@ -136,7 +136,7 @@ function m.installPackages(packageList, installCommandPrefix)
     end
 end
 
-function m.insertPacakges(packageName, packageList, packageListName)
+function m.insertPackages(packageName, packageList, packageListName)
     local managers = {
         nix = {
             clangd = function()
