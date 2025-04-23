@@ -102,9 +102,6 @@ function m.ifPackageExistInRepos(packageName, packageManager)
         end,
 
         nix = function()
-            if packageName == "clangd" then
-                packageName = "clang-tools"
-            end
             if
                 vim.system({ "sh", "-c", "nix-search -n " .. packageName .. " | grep -E '^" .. packageName .. " '" })
                     :wait().code == 0
@@ -134,20 +131,24 @@ function m.installPackages(packageList, installCommandPrefix)
     end
 end
 
-function m.insertPackages(packageName, packageList, packageListName)
+function m.nameSubstitute(packageName, packageManagerName)
     local managers = {
         nix = {
             clangd = function()
-                print("clangd: " .. packageName)
-                table.insert(packageList, "clang-tools")
+                return "clang-tools"
+            end,
+            ["clang-format"] = function()
+                return "clang-tools"
+            end,
+            debugpy = function()
+                return "python313Packages.debugpy"
             end,
         },
         default = function()
-            print("default: " .. packageName)
-            table.insert(packageList, packageName)
+            return packageName
         end,
-    };
-    (managers[packageListName][packageName] or managers.default)()
+    }
+    return (managers[packageManagerName][packageName] or managers.default)()
 end
 
 return m

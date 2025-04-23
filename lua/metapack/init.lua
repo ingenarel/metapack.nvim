@@ -60,8 +60,9 @@ function m._catagorizePackages(packageData)
                 end
                 return
             elseif string.find(m._osData, "nixos") then
-                if packageManager.ifPackageExistInRepos(packageData, "nix") then
-                    packageManager.insertPackages(packageData, m._nixPackages, "nix")
+                local packageName = packageManager.nameSubstitute(packageData, "nix")
+                if packageManager.ifPackageExistInRepos(packageName, "nix") then
+                    table.insert(m._nixPackages, packageName)
                     lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
                 end
                 return
@@ -157,7 +158,7 @@ function m.setup(opts)
                 return value.installers.nix
             end)
             if value.installed and success and output then
-                packageManager.insertPackages(key, m._nixPackages, "nix")
+                table.insert(m._nixPackages, packageManager.nameSubstitute(key, "nix"))
             end
         end
         local luix = require("luix")
