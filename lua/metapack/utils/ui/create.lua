@@ -30,22 +30,22 @@ function m.createDataBaseGraph()
         lastLine = lastLine .. " "
     end
 
-    local i = 1
-    graph[i] = "╭"
+    local lineNumber = 1
+    graph[lineNumber] = "╭"
         .. packageSplit
         .. "┬─────────┬───────┬──────┬───┬───┬─────┬───╮"
-    i = i + 1
+    lineNumber = lineNumber + 1
     local packageSpaces = ""
     for _ = 4, longestPackageNameLen - 1 do
         packageSpaces = packageSpaces .. " "
     end
-    graph[i] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│Nix│"
-    i = i + 1
-    graph[i] = "├"
+    graph[lineNumber] = "│Name" .. packageSpaces .. "│Installed│Portage│Pacman│AUR│APT│Mason│Nix│"
+    lineNumber = lineNumber + 1
+    graph[lineNumber] = "├"
         .. packageSplit
         .. "┼─────────┼───────┼──────┼───┼───┼─────┼───┤"
 
-    i = i + 1
+    lineNumber = lineNumber + 1
 
     local ticks = {
         portage = { "   ✓   │", "       │" },
@@ -61,9 +61,9 @@ function m.createDataBaseGraph()
             return dataBase[packageName].installers[packageManagerName] == true
         end)
         if success and functionOutput then
-            graph[i] = graph[i] .. ticks[packageManagerName][1]
+            graph[lineNumber] = graph[lineNumber] .. ticks[packageManagerName][1]
         else
-            graph[i] = graph[i] .. ticks[packageManagerName][2]
+            graph[lineNumber] = graph[lineNumber] .. ticks[packageManagerName][2]
         end
     end
 
@@ -72,11 +72,11 @@ function m.createDataBaseGraph()
         for _ = #key, longestPackageNameLen - 1 do
             packageSpaces = packageSpaces .. " "
         end
-        graph[i] = "│" .. key .. packageSpaces .. "│"
+        graph[lineNumber] = "│" .. key .. packageSpaces .. "│"
         if dataBase[key].installed then
-            graph[i] = graph[i] .. "    ✓    │"
+            graph[lineNumber] = graph[lineNumber] .. "    ✓    │"
         else
-            graph[i] = graph[i] .. "    X    │"
+            graph[lineNumber] = graph[lineNumber] .. "    X    │"
         end
         addTickIfInstalled(key, "portage")
         addTickIfInstalled(key, "pacman")
@@ -86,15 +86,17 @@ function m.createDataBaseGraph()
         addTickIfInstalled(key, "nix")
         i = i + 1
         graph[i] = "├"
+        lineNumber = lineNumber + 1
+        graph[lineNumber] = "├"
             .. packageSplit
             .. "┼─────────┼───────┼──────┼───┼───┼─────┼───┤"
-        i = i + 1
+        lineNumber = lineNumber + 1
     end
 
-    graph[i - 1] = "╰"
+    graph[lineNumber - 1] = "╰"
         .. packageSplit
         .. "┴─────────┴───────┴──────┴───┴───┴─────┴───╯"
-    graph[i] = " " .. lastLine .. "                                        "
+    graph[lineNumber] = " " .. lastLine .. "                                        "
 
     return graph
 end
