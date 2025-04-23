@@ -51,9 +51,9 @@ function m.createDataBaseGraph()
         { "portage", "   ✓   │", "       │" },
         { "pacman", "   ✓  │", "      │" },
         { "aur", " ✓ │", "   │" },
-        { "apt", "   │", "   │" },
+        { "apt", " ✓ │", "   │" },
         { "mason", "  ✓  │", "     │" },
-        { "nix", "   │", "   │" },
+        { "nix", " ✓ │", "   │" },
     }
 
     local function addTickIfInstalled(packageName, packageManagerName, ticksEntry)
