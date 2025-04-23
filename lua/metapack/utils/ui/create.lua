@@ -48,22 +48,22 @@ function m.createDataBaseGraph()
     lineNumber = lineNumber + 1
 
     local ticks = {
-        portage = { "   ✓   │", "       │" },
-        pacman = { "   ✓  │", "      │" },
-        aur = { " ✓ │", "   │" },
-        apt = { "   │", "   │" },
-        mason = { "  ✓  │", "     │" },
-        nix = { "   │", "   │" },
+        { "portage", "   ✓   │", "       │" },
+        { "pacman", "   ✓  │", "      │" },
+        { "aur", " ✓ │", "   │" },
+        { "apt", "   │", "   │" },
+        { "mason", "  ✓  │", "     │" },
+        { "nix", "   │", "   │" },
     }
 
-    local function addTickIfInstalled(packageName, packageManagerName)
+    local function addTickIfInstalled(packageName, packageManagerName, ticksEntry)
         local success, functionOutput = pcall(function()
             return dataBase[packageName].installers[packageManagerName] == true
         end)
         if success and functionOutput then
-            graph[lineNumber] = graph[lineNumber] .. ticks[packageManagerName][1]
+            graph[lineNumber] = graph[lineNumber] .. ticks[ticksEntry][2]
         else
-            graph[lineNumber] = graph[lineNumber] .. ticks[packageManagerName][2]
+            graph[lineNumber] = graph[lineNumber] .. ticks[ticksEntry][3]
         end
     end
 
@@ -78,14 +78,9 @@ function m.createDataBaseGraph()
         else
             graph[lineNumber] = graph[lineNumber] .. "    X    │"
         end
-        addTickIfInstalled(key, "portage")
-        addTickIfInstalled(key, "pacman")
-        addTickIfInstalled(key, "aur")
-        addTickIfInstalled(key, "apt")
-        addTickIfInstalled(key, "mason")
-        addTickIfInstalled(key, "nix")
-        i = i + 1
-        graph[i] = "├"
+        for i = 1, #ticks do
+            addTickIfInstalled(key, ticks[i][1], i)
+        end
         lineNumber = lineNumber + 1
         graph[lineNumber] = "├"
             .. packageSplit
