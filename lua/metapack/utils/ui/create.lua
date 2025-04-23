@@ -47,11 +47,24 @@ function m.createDataBaseGraph()
 
     i = i + 1
 
-    local function checkIfInstalled(packageName, packageManagerName)
+    local ticks = {
+        portage = { "   ✓   │", "       │" },
+        pacman = { "   ✓  │", "      │" },
+        aur = { " ✓ │", "   │" },
+        apt = { "   │", "   │" },
+        mason = { "  ✓  │", "     │" },
+        nix = { "   │", "   │" },
+    }
+
+    local function addTickIfInstalled(packageName, packageManagerName)
         local success, functionOutput = pcall(function()
             return dataBase[packageName].installers[packageManagerName] == true
         end)
-        return success == true and functionOutput == true
+        if success and functionOutput then
+            graph[i] = graph[i] .. ticks[packageManagerName][1]
+        else
+            graph[i] = graph[i] .. ticks[packageManagerName][2]
+        end
     end
 
     for key, _ in pairs(dataBase) do
@@ -65,36 +78,12 @@ function m.createDataBaseGraph()
         else
             graph[i] = graph[i] .. "    X    │"
         end
-        if checkIfInstalled(key, "portage") then
-            graph[i] = graph[i] .. "   ✓   │"
-        else
-            graph[i] = graph[i] .. "       │"
-        end
-        if checkIfInstalled(key, "pacman") then
-            graph[i] = graph[i] .. "   ✓  │"
-        else
-            graph[i] = graph[i] .. "      │"
-        end
-        if checkIfInstalled(key, "aur") then
-            graph[i] = graph[i] .. " ✓ │"
-        else
-            graph[i] = graph[i] .. "   │"
-        end
-        if checkIfInstalled(key, "apt") then
-            graph[i] = graph[i] .. " ✓ │"
-        else
-            graph[i] = graph[i] .. "   │"
-        end
-        if checkIfInstalled(key, "mason") then
-            graph[i] = graph[i] .. "  ✓  │"
-        else
-            graph[i] = graph[i] .. "     │"
-        end
-        if checkIfInstalled(key, "nix") then
-            graph[i] = graph[i] .. " ✓ │"
-        else
-            graph[i] = graph[i] .. "   │"
-        end
+        addTickIfInstalled(key, "portage")
+        addTickIfInstalled(key, "pacman")
+        addTickIfInstalled(key, "aur")
+        addTickIfInstalled(key, "apt")
+        addTickIfInstalled(key, "mason")
+        addTickIfInstalled(key, "nix")
         i = i + 1
         graph[i] = "├"
             .. packageSplit
