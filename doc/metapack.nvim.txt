@@ -25,12 +25,15 @@ Using lazy.nvim ~
         "ingenarel/metapack.nvim",
         dependencies = {
             {
-                "williamboman/mason.nvim", -- will try to make this optional in future
+                "williamboman/mason.nvim", -- optional if you want mason support
                 config = true,
             },
             {
                 "ingenarel/smart-floatterm.nvim", -- terminal plugin that i made to use with my other plugins
                 config = true,
+            }
+            {
+                "ingenarel/luix.nvim", --optional if you want nix support
             }
         },
         config = function()
