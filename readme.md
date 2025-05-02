@@ -23,7 +23,7 @@ doesn't, it tries to use mason as fallback
                 config = true,
             },
             {
-                "ingenarel/smart-floatterm.nvim", -- terminal plugin that i made to use with my other plugins
+                "ingenarel/smart-term.nvim", -- terminal plugin that i made to use with my other plugins
                 config = true,
             }
             {

@@ -29,7 +29,7 @@ Using lazy.nvim ~
                 config = true,
             },
             {
-                "ingenarel/smart-floatterm.nvim", -- terminal plugin that i made to use with my other plugins
+                "ingenarel/smart-term.nvim", -- terminal plugin that i made to use with my other plugins
                 config = true,
             }
             {

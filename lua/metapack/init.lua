@@ -184,7 +184,7 @@ function m.setup(opts)
                 .. luix.parse({ "pkgs", "inputs", "..." }, { systemPackages = packages }),
             opts.nixOutputFile
         )
-        require("smart-floatterm").open(
+        require("smart-term").openFloaTerm(
             "git -C "
                 .. opts.nixFlakeDir
                 .. " add "
