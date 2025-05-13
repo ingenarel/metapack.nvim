@@ -127,7 +127,7 @@ function m.installPackages(packageList, installCommandPrefix)
         for i = 1, #packageList do
             installCommand = installCommand .. " " .. packageList[i]
         end
-        require("smart-term").openFloaTerm(installCommand)
+        require("smart-term").openSpliTerm(installCommand)
     end
 end
 
