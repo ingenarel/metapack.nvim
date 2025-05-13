@@ -38,7 +38,7 @@ function m.ifPackageExistInRepos(packageName, packageManager)
     --TODO: make stuff work in the background without using a blocking call like vim.system():wait()
     local commands = {
         portage = function()
-            if vim.fn.executable("eix") then
+            if vim.fn.executable("eix")  == 1 then
                 if vim.system({ "eix", "-r", "^" .. packageName .. "$" }):wait().code == 0 then
                     return true
                 else
