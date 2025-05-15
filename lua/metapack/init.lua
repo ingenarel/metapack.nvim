@@ -74,6 +74,9 @@ function m._catagorizePackages(packageData)
                     table.insert(m.sharedData.nixPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
                 end
+                if packageData.default then
+                    m._catagorizePackages(packageData[1])
+                end
             end
         else
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
