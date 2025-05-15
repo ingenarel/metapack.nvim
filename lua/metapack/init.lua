@@ -12,7 +12,21 @@ local m = {
     _masonCommand = "",
     _enableLuix = false,
     _enableMason = false,
-    osName = "",
+    sharedData = {
+        portagePackages = {},
+        masonPackages = {},
+        pacmanPackages = {},
+        aurPackages = {},
+        aurHelper = "",
+        aptPackages = {},
+        nixPackages = {},
+        osData = "",
+        rootCommand = "sudo ",
+        masonCommand = "",
+        enableLuix = false,
+        enableMason = false,
+        osName = "",
+    },
 }
 
 local packageManager = require("metapack.utils.packageManager")
@@ -133,7 +147,7 @@ function m.setup(opts)
         require("luse")
     end)
 
-    m.osName = system.setOS()
+    m.sharedData.osName = system.setOS()
 
     for i = 1, #opts.ensure_installed do
         m._catagorizePackages(opts.ensure_installed[i])
