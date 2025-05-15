@@ -52,40 +52,7 @@ function m._catagorizePackages(packageData)
         if packageManager.ifInPath(packageData) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
             vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            if string.find(m._osData, "gentoo") then
-                local packageName = packageManager.nameSubstitute(packageData, "portage")
-                if packageManager.ifPackageExistInRepos(packageName, "portage") then
-                    table.insert(m._portagePackages, packageName)
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { portage = true } } })
-                end
-                return
-            elseif string.find(m._osData, "arch") then
-                if packageManager.ifPackageExistInRepos(packageData, "pacman") then
-                    table.insert(m._pacmanPackages, packageData)
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { pacman = true } } })
-                    return
-                else
-                    m._aurHelper = packageManager.setAurHelper()
-                    if m._aurHelper ~= "" and packageManager.ifPackageExistInRepos(packageData, m._aurHelper) then
-                        table.insert(m._aurPackages, packageData)
-                        lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { aur = true } } })
-                        return
-                    end
-                end
-            elseif string.find(m._osData, "debian") then
-                if packageManager.ifPackageExistInRepos(packageData, "apt") then
-                    table.insert(m._aptPackages, packageData)
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { apt = true } } })
-                end
-                return
-            elseif string.find(m._osData, "nixos") then
-                local packageName = packageManager.nameSubstitute(packageData, "nix")
-                if packageManager.ifPackageExistInRepos(packageName, "nix") then
-                    table.insert(m._nixPackages, packageName)
-                    lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { nix = true } } })
-                end
-                return
-            end
+            packageManager.packageInsert(packageData, m.sharedData, packageDataBase)
             if m._enableMason and require("mason-registry").has_package(packageData) then
                 table.insert(m._masonPackages, packageData)
                 lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })

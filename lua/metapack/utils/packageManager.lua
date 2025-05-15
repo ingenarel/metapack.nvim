@@ -1,5 +1,7 @@
 local m = {}
 
+local lowLevel = require("metapack.utils.lowLevel")
+
 ---Sets the AUR helper, currently supports yay, and paru
 ---If you want to add something just add it to the `aurHelperList`
 ---@return string # returns the aur helper name. just the name, so just `paru`, `yay` etc etc
@@ -154,6 +156,44 @@ function m.nameSubstitute(packageName, packageManagerName)
         end,
     }
     return (managers[packageManagerName][packageName] or managers.default)()
+end
+
+function m.packageInsert(packageName, sharedData, packageDataBase)
+    local oss = {
+        gentoo = function()
+            local packageAltName = m.nameSubstitute(packageName, "portage")
+            if m.ifPackageExistInRepos(packageAltName, "portage") then
+                table.insert(sharedData.portagePackages, packageAltName)
+                lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { portage = true } } })
+            end
+        end,
+        arch = function()
+            if m.ifPackageExistInRepos(packageName, "pacman") then
+                table.insert(sharedData.pacmanPackages, packageName)
+                lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { pacman = true } } })
+            else
+                --FIXME: don't do that, set sharedValue and use that
+                m._aurHelper = m.setAurHelper()
+                if m._aurHelper ~= "" and m.ifPackageExistInRepos(packageName, m._aurHelper) then
+                    table.insert(sharedData.aurPackages, packageName)
+                    lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { aur = true } } })
+                end
+            end
+        end,
+        debian = function()
+            if m.ifPackageExistInRepos(packageName, "apt") then
+                table.insert(sharedData.aptPackages, packageName)
+                lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { apt = true } } })
+            end
+        end,
+        nixos = function()
+            local packageAltName = m.nameSubstitute(packageName, "nix")
+            if m.ifPackageExistInRepos(packageAltName, "nix") then
+                table.insert(m._nixPackages, packageAltName)
+                lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { nix = true } } })
+            end
+        end,
+    }
 end
 
 return m
