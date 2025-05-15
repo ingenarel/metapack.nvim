@@ -48,7 +48,7 @@ function m._catagorizePackages(packageData)
         packageData.execName = packageData.execName or packageData[1]
         if packageData.force or packageManager.ifInPath(packageData.execName) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
-            if packageData.os == nil or m.sharedData.osName == packageData.os then
+            if m.sharedData.osName == packageData.os then
                 if packageData.portage then
                     table.insert(m.sharedData.portagePackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
@@ -74,9 +74,8 @@ function m._catagorizePackages(packageData)
                     table.insert(m.sharedData.nixPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
                 end
-                if packageData.default then
-                    m._catagorizePackages(packageData[1])
-                end
+            elseif packageData.os == nil then
+                m._catagorizePackages(packageData[1])
             end
         else
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
