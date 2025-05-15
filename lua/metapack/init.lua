@@ -37,13 +37,6 @@ local system = require("metapack.utils.system")
 local oldPackageDataBase = json.readDataBase()
 local packageDataBase = vim.deepcopy(oldPackageDataBase)
 
-if vim.fn.has("win32") == 0 then -- {{{
-    m._osData = vim.system({ "grep", "-i", "-E", '^(id|id_like|name|pretty_name)="?.+"?', "/etc/os-release" })
-        :wait().stdout
-else
-    m._osData = "windows"
-end -- }}}
-
 ---@param packageData (string|PackageData)
 ---@return nil
 ---@nodoc FIXME: this function is an unoptimized peice of shit, and i need to rewrite it when i'm not thinking about killing myself
