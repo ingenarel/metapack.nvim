@@ -38,7 +38,7 @@ function m.ifPackageExistInRepos(packageName, packageManager)
     --TODO: make stuff work in the background without using a blocking call like vim.system():wait()
     local commands = {
         portage = function()
-            if vim.fn.executable("eix")  == 1 then
+            if vim.fn.executable("eix") == 1 then
                 if vim.system({ "eix", "-r", "^" .. packageName .. "$" }):wait().code == 0 then
                     return true
                 else
@@ -142,6 +142,11 @@ function m.nameSubstitute(packageName, packageManagerName)
             end,
             debugpy = function()
                 return "python313Packages.debugpy"
+            end,
+        },
+        portage = {
+            clangd = function()
+                return "clang"
             end,
         },
         default = function()
