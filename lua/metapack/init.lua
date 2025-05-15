@@ -1,17 +1,5 @@
 ---@class initModule
 local m = {
-    _portagePackages = {},
-    _masonPackages = {},
-    _pacmanPackages = {},
-    _aurPackages = {},
-    _aurHelper = "",
-    _aptPackages = {},
-    _nixPackages = {},
-    _osData = "",
-    _rootCommand = "sudo ",
-    _masonCommand = "",
-    _enableLuix = false,
-    _enableMason = false,
     sharedData = {
         portagePackages = {},
         masonPackages = {},
@@ -20,11 +8,11 @@ local m = {
         aurHelper = "",
         aptPackages = {},
         nixPackages = {},
-        osData = "",
         rootCommand = "sudo ",
         masonCommand = "",
         enableLuix = false,
         enableMason = false,
+        enableLuse = false,
         osName = "",
     },
 }
@@ -44,13 +32,13 @@ function m._catagorizePackages(packageData)
     if type(packageData) == "string" then
         if packageManager.ifInPath(packageData) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = false } })
-            vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
-            packageManager.packageInsert(packageData, m.sharedData, packageDataBase)
-            if m._enableMason and require("mason-registry").has_package(packageData) then
-                table.insert(m._masonPackages, packageData)
+            -- vim.notify("Searching for " .. packageData, vim.log.levels.INFO)
+            if packageManager.packageInsert(packageData, m.sharedData, packageDataBase) then
+            elseif m.sharedData.enableMason and require("mason-registry").has_package(packageData) then
+                table.insert(m.sharedData.masonPackages, packageData)
                 lowLevel.tableUpdate(packageDataBase, { [packageData] = { installers = { mason = true } } })
             else
-                vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
+                -- vim.notify("Can't find " .. packageData .. " on any known package database!", vim.log.levels.WARN)
                 lowLevel.tableUpdate(packageDataBase, { [packageData] = { installable = false } })
             end
         else
@@ -60,30 +48,30 @@ function m._catagorizePackages(packageData)
         packageData.execName = packageData.execName or packageData[1]
         if packageData.force or packageManager.ifInPath(packageData.execName) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
-            if packageData.os == nil or string.find(m._osData, packageData.os) then
+            if packageData.os == nil or string.find(m.sharedData.osName, packageData.os) then
                 if packageData.portage then
-                    table.insert(m._portagePackages, packageData[1])
+                    table.insert(m.sharedData.portagePackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
                 end
-                if m._enableMason and packageData.mason then
-                    table.insert(m._masonPackages, packageData[1])
+                if m.sharedData.enableMason and packageData.mason then
+                    table.insert(m.sharedData.masonPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
                 end
                 if packageData.pacman then
-                    table.insert(m._pacmanPackages, packageData[1])
+                    table.insert(m.sharedData.pacmanPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { pacman = true } } })
                 end
                 if packageData.aur then
-                    m._aurHelper = packageManager.setAurHelper()
-                    table.insert(m._aurPackages, packageData[1])
+                    m.sharedData.aurHelper = packageManager.setAurHelper()
+                    table.insert(m.sharedData.aurPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { aur = true } } })
                 end
                 if packageData.apt then
-                    table.insert(m._aptPackages, packageData[1])
+                    table.insert(m.sharedData.aurPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
                 end
                 if packageData.nix then
-                    table.insert(m._nixPackages, packageData[1])
+                    table.insert(m.sharedData.nixPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
                 end
             end
@@ -97,13 +85,13 @@ function m.setup(opts)
     -- NOTE: use this after i try to implement windows and mac{{{
     -- if osData.sysname == "Linux" then
     -- end}}}
-    m._enableMason, _ = pcall(function()
+    m.sharedData.enableMason, _ = pcall(function()
         require("mason")
     end)
-    m._enableLuix, _ = pcall(function()
+    m.sharedData.enableLuix, _ = pcall(function()
         require("luix")
     end)
-    m._enableLuse, _ = pcall(function()
+    m.sharedData.enableLuse, _ = pcall(function()
         require("luse")
     end)
 
@@ -118,56 +106,56 @@ function m.setup(opts)
     end
 
     if opts.doas then
-        m._rootCommand = "doas "
+        m.sharedData.rootCommand = "doas "
     end
 
-    if m._enableLuse and #m._portagePackages > 0 then
-        local installCommand = m._rootCommand
+    if m.sharedData.enableLuse and #m.sharedData.portagePackages > 0 then
+        local installCommand = m.sharedData.rootCommand
             .. " "
             .. os.getenv("SHELL")
             .. " -c \"echo '# THIS FILE HAS BEEN AUTOMATICALLY GENERATED BY METAPACK.NVIM!!!\n# YOU SHOULD NOT EDIT THIS FILE, INSTEAD EDIT YOUR METAPACK.NVIM CONFIGURATION!!!\n\n\n"
-            .. require("luse").generateFile(m._portagePackages)
+            .. require("luse").generateFile(m.sharedData.portagePackages)
             .. "' > /etc/portage/package.use/metapack.nvim && emerge --ask y --verbose --color y --quiet-build y"
 
-        for i = 1, #m._portagePackages do
-            installCommand = installCommand .. " " .. m._portagePackages[i]
+        for i = 1, #m.sharedData.portagePackages do
+            installCommand = installCommand .. " " .. m.sharedData.portagePackages[i]
         end
         installCommand = installCommand .. '"'
 
         require("smart-term").openSpliTerm(installCommand)
     end
-    packageManager.installPackages(m._pacmanPackages, m._rootCommand .. " pacman -S ")
-    packageManager.installPackages(m._aurPackages, m._aurHelper .. " -S ")
-    packageManager.installPackages(m._aptPackages, m._rootCommand .. " apt-get install ")
+    packageManager.installPackages(m.sharedData.pacmanPackages, m.sharedData.rootCommand .. " pacman -S ")
+    packageManager.installPackages(m.sharedData.aurPackages, m.sharedData.aurHelper .. " -S ")
+    packageManager.installPackages(m.sharedData.aptPackages, m.sharedData.rootCommand .. " apt-get install ")
 
-    if m._enableMason and #m._masonPackages > 0 then -- {{{
-        for i = 1, #m._masonPackages do
-            m._masonCommand = m._masonCommand .. " " .. m._masonPackages[i]
+    if m.sharedData.enableMason and #m.sharedData.masonPackages > 0 then -- {{{
+        for i = 1, #m.sharedData.masonPackages do
+            m.sharedData.masonCommand = m.sharedData.masonCommand .. " " .. m.sharedData.masonPackages[i]
         end
-        vim.cmd("MasonInstall" .. m._masonCommand)
+        vim.cmd("MasonInstall" .. m.sharedData.masonCommand)
     end -- }}}
 
-    if m._enableLuix and #m._nixPackages > 0 then
+    if m.sharedData.enableLuix and #m.sharedData.nixPackages > 0 then
         for key, value in pairs(packageDataBase) do
             local success, output = pcall(function()
                 return value.installers.nix
             end)
             if value.installed and success and output then
-                table.insert(m._nixPackages, packageManager.nameSubstitute(key, "nix"))
+                table.insert(m.sharedData.nixPackages, packageManager.nameSubstitute(key, "nix"))
             end
         end
 
         local packages = {}
         packages.python313Packages = {}
         packages.python312Packages = {}
-        for i = 1, #m._nixPackages do
-            local packageName = packageManager.nameSubstitute(m._nixPackages[i], "nix")
+        for i = 1, #m.sharedData.nixPackages do
+            local packageName = packageManager.nameSubstitute(m.sharedData.nixPackages[i], "nix")
             if vim.startswith(packageName, "python313Packages.") then
-                table.insert(packages.python313Packages, m._nixPackages[i])
+                table.insert(packages.python313Packages, m.sharedData.nixPackages[i])
             elseif vim.startswith(packageName, "python312Packages.") then
-                table.insert(packages.python312Packages, m._nixPackages[i])
+                table.insert(packages.python312Packages, m.sharedData.nixPackages[i])
             else
-                table.insert(packages, m._nixPackages[i])
+                table.insert(packages, m.sharedData.nixPackages[i])
             end
         end
 
@@ -185,7 +173,7 @@ function m.setup(opts)
                 .. " add "
                 .. opts.nixOutputFile
                 .. " && "
-                .. m._rootCommand
+                .. m.sharedData.rootCommand
                 .. ' nixos-rebuild switch --flake "'
                 .. opts.nixFlakeDir
                 .. "?submodules=1#"

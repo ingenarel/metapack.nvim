@@ -165,18 +165,21 @@ function m.packageInsert(packageName, sharedData, packageDataBase)
             if m.ifPackageExistInRepos(packageAltName, "portage") then
                 table.insert(sharedData.portagePackages, packageAltName)
                 lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { portage = true } } })
+                return true
             end
         end,
         arch = function()
             if m.ifPackageExistInRepos(packageName, "pacman") then
                 table.insert(sharedData.pacmanPackages, packageName)
                 lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { pacman = true } } })
+                return true
             else
                 --FIXME: don't do that, set sharedValue and use that
-                m._aurHelper = m.setAurHelper()
-                if m._aurHelper ~= "" and m.ifPackageExistInRepos(packageName, m._aurHelper) then
+                sharedData.aurHelper = m.setAurHelper()
+                if sharedData.aurHelper ~= "" and m.ifPackageExistInRepos(packageName, sharedData.aurHelper) then
                     table.insert(sharedData.aurPackages, packageName)
                     lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { aur = true } } })
+                    return true
                 end
             end
         end,
@@ -184,16 +187,19 @@ function m.packageInsert(packageName, sharedData, packageDataBase)
             if m.ifPackageExistInRepos(packageName, "apt") then
                 table.insert(sharedData.aptPackages, packageName)
                 lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { apt = true } } })
+                return true
             end
         end,
         nixos = function()
             local packageAltName = m.nameSubstitute(packageName, "nix")
             if m.ifPackageExistInRepos(packageAltName, "nix") then
-                table.insert(m._nixPackages, packageAltName)
+                table.insert(sharedData.nixPackages, packageAltName)
                 lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { nix = true } } })
+                return true
             end
         end,
     }
+    return oss[sharedData.osName]()
 end
 
 return m
