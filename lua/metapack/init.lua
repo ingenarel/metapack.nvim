@@ -12,11 +12,13 @@ local m = {
     _masonCommand = "",
     _enableLuix = false,
     _enableMason = false,
+    osName = "",
 }
 
 local packageManager = require("metapack.utils.packageManager")
 local json = require("metapack.utils.json")
 local lowLevel = require("metapack.utils.lowLevel")
+local system = require("metapack.utils.system")
 
 local oldPackageDataBase = json.readDataBase()
 local packageDataBase = vim.deepcopy(oldPackageDataBase)
@@ -130,6 +132,8 @@ function m.setup(opts)
     m._enableLuse, _ = pcall(function()
         require("luse")
     end)
+
+    m.osName = system.setOS()
 
     for i = 1, #opts.ensure_installed do
         m._catagorizePackages(opts.ensure_installed[i])
