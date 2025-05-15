@@ -148,7 +148,7 @@ function m.nameSubstitute(packageName, packageManagerName)
         },
         portage = {
             clangd = function()
-                return "clang"
+                return "llvm-core/clang"
             end,
         },
         default = function()
