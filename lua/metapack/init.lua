@@ -186,10 +186,11 @@ function m.setup(opts)
                 .. opts.nixOutputFile
                 .. " && "
                 .. m._rootCommand
-                .. " nixos-rebuild switch --flake "
+                .. ' nixos-rebuild switch --flake "'
                 .. opts.nixFlakeDir
-                .. "#"
+                .. "?submodules=1#"
                 .. vim.fn.hostname()
+		.. '"'
         )
     end
 
