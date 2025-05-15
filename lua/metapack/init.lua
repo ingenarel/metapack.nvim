@@ -48,7 +48,7 @@ function m._catagorizePackages(packageData)
         packageData.execName = packageData.execName or packageData[1]
         if packageData.force or packageManager.ifInPath(packageData.execName) == false then
             lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
-            if packageData.os == nil or string.find(m.sharedData.osName, packageData.os) then
+            if packageData.os == nil or m.sharedData.osName == packageData.os then
                 if packageData.portage then
                     table.insert(m.sharedData.portagePackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
@@ -178,7 +178,7 @@ function m.setup(opts)
                 .. opts.nixFlakeDir
                 .. "?submodules=1#"
                 .. vim.fn.hostname()
-		.. '"'
+                .. '"'
         )
     end
 
