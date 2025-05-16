@@ -13,4 +13,14 @@ function m.tableUpdate(table1, table2)
     end
 end
 
+function m.tableDeepSearch(table, item)
+    for _, value in pairs(table) do
+        if value == item then
+            return true
+        elseif type(value) == "table" then
+            m.tableDeepSearch(value, item)
+        end
+    end
+end
+
 return m
