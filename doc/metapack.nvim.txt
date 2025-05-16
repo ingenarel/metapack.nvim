@@ -174,7 +174,7 @@ Implement these features  ~
 - Features:
     - [x] A logger for managing, cleaning, deleting and updating packages.
     - [ ] Actually implement the cleaning, deleting and updating thing
-    - [ ] Work with gentoo USE flags
+    - [x] Work with gentoo USE flags
         some stuff in gentoo, like codelldb and clang-format, are not separate
         packages, but instead they are USE flags in the clang package
 
