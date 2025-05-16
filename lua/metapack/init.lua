@@ -74,7 +74,9 @@ function m._catagorizePackages(packageData)
                     table.insert(m.sharedData.nixPackages, packageData[1])
                     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
                 end
-            elseif packageData.os == nil then
+            elseif packageData.os == nil and lowLevel.tableDeepSearch(m.sharedData, packageData[i]) == false then
+                print("yes")
+                vim.print(m.sharedData)
                 m._catagorizePackages(packageData[1])
             end
         else
