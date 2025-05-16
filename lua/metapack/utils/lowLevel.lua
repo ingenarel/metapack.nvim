@@ -14,13 +14,17 @@ function m.tableUpdate(table1, table2)
 end
 
 function m.tableDeepSearch(table, item)
-    for _, value in pairs(table) do
+    for key, value in pairs(table) do
+        -- vim.print('key = "', key, '"value = "', value, '"')
         if value == item then
             return true
         elseif type(value) == "table" then
-            m.tableDeepSearch(value, item)
+            if m.tableDeepSearch(value, item) then
+                return true
+            end
         end
     end
+    return false
 end
 
 return m
