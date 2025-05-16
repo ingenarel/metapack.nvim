@@ -45,43 +45,63 @@ function m._catagorizePackages(packageData)
             lowLevel.tableUpdate(packageDataBase, { [packageData] = { installed = true } })
         end
     elseif type(packageData) == "table" then
-        packageData.execName = packageData.execName or packageData[1]
-        if packageData.force or packageManager.ifInPath(packageData.execName) == false then
-            lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
-            if m.sharedData.osName == packageData.os then
-                if packageData.portage then
-                    table.insert(m.sharedData.portagePackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { portage = true } } })
-                end
-                if m.sharedData.enableMason and packageData.mason then
-                    table.insert(m.sharedData.masonPackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { mason = true } } })
-                end
-                if packageData.pacman then
-                    table.insert(m.sharedData.pacmanPackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { pacman = true } } })
-                end
-                if packageData.aur then
-                    m.sharedData.aurHelper = packageManager.setAurHelper()
-                    table.insert(m.sharedData.aurPackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { aur = true } } })
-                end
-                if packageData.apt then
-                    table.insert(m.sharedData.aurPackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { apt = true } } })
-                end
-                if packageData.nix then
-                    table.insert(m.sharedData.nixPackages, packageData[1])
-                    lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installers = { nix = true } } })
-                end
-            elseif packageData.os == nil and lowLevel.tableDeepSearch(m.sharedData, packageData[i]) == false then
-                print("yes")
-                vim.print(m.sharedData)
-                m._catagorizePackages(packageData[1])
+        --[[
+        {
+            gentoo = {"bash-language-server", mason = true}
+            default = "bash-language-server"
+        }
+        --]]
+        local foundOs = false
+        for key, value in pairs(packageData) do
+            if key == m.sharedData.osName then
+                value.execName = value.execName or value[1]
+                if value.force or packageManager.ifInPath(value.execName) == false then
+                    lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installed = false } })
+                    if value.portage then
+                        table.insert(m.sharedData.portagePackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { portage = true } } })
+                    end
+                    if m.sharedData.enableMason and value.mason then
+                        table.insert(m.sharedData.masonPackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { mason = true } } })
+                    end
+                    if value.pacman then
+                        table.insert(m.sharedData.pacmanPackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { pacman = true } } })
+                    end
+                    if value.aur then
+                        m.sharedData.aurHelper = packageManager.setAurHelper()
+                        table.insert(m.sharedData.aurPackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { aur = true } } })
+                    end
+                    if value.apt then
+                        table.insert(m.sharedData.aurPackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { apt = true } } })
+                    end
+                    if value.nix then
+                        table.insert(m.sharedData.nixPackages, value[1])
+                        lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { nix = true } } })
+                    end
+                foundOs = true
+                break
             end
-        else
-            lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
         end
+        if foundOs == false then
+            m._catagorizePackages(packageData.default)
+        end
+        -- packageData.execName = packageData.execName or packageData[1]
+        -- if packageData.force or packageManager.ifInPath(packageData.execName) == false then
+        -- lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = false } })
+        -- if m.sharedData.osName == packageData.os then
+
+        -- elseif packageData.os == nil and lowLevel.tableDeepSearch(m.sharedData, packageData[i]) == false then
+        --     print("yes")
+        --     vim.print(m.sharedData)
+        --     m._catagorizePackages(packageData[1])
+        -- end
+        -- else
+        --     lowLevel.tableUpdate(packageDataBase, { [packageData[1]] = { installed = true } })
+        -- end
     end
 end
 
