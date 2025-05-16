@@ -82,6 +82,7 @@ function m._catagorizePackages(packageData)
                         table.insert(m.sharedData.nixPackages, value[1])
                         lowLevel.tableUpdate(packageDataBase, { [value[1]] = { installers = { nix = true } } })
                     end
+                end
                 foundOs = true
                 break
             end
