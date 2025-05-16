@@ -46,23 +46,35 @@ Using lazy.nvim ~
                     "pyright", -- package could be string for simple use
                     "clangd",
                     {
-                        "lua-language-server",
-                        portage = true,
-                        os = "gentoo"
-                    }, -- or it could be a table specifying stuff,
-                    {
-                        "lua-language-server-git",
-                        aur = true,
-                        os = "arch",
-                        exec = "lua-language-server"
-                    }, -- you can use execName if the package name isn't the same as the executable name
+                        gentoo {"lua-language-server", mason = true},
+                        arch = { "lua-language-server-git", aur = true, execName = "lua-language-server" }
+                        default = "lua-language-server"
+                    },
+                    --[[ tables should have a default name for the package
+                    you can specify os based configs too,
+                    available values are:
+                        gentoo
+                        arch
+                        debian (should work on most debian based distros)
+                        nixos
+                    the OS is set by reading /etc/os-release
+
+                    available values for each table are:
+                        the first item should be the name of the package
+                        mason: if it should be installed with mason
+                        portage: if it should be installed with mason
+                        pacman: if it should be installed with mason
+                        aur: if it should be installed with an aur helper
+                        nix: if it should be installed with nix
+                        execName: the executable name
+                    --]]
                     "bash-language-server",
                     "termux-language-server",
                     "ltex-ls",
                     "yaml-language-server",
                     --lsp
                     --dap
-                    { "codelldb", mason = true}, -- if you use table, it's not idiotproof, so if you name a plugin wrong, that's on you.
+                    "codelldb",
                     "debugpy",
                     --dap
                     --formatter
