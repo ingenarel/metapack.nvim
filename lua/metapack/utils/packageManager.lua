@@ -150,6 +150,9 @@ function m.nameSubstitute(packageName, packageManagerName)
             clangd = function()
                 return "llvm-core/clang"
             end,
+            jq = function()
+                return "app-misc/jq"
+            end,
         },
         default = function()
             return packageName
