@@ -154,6 +154,11 @@ function m.nameSubstitute(packageName, packageManagerName)
                 return "app-misc/jq"
             end,
         },
+        arch = {
+            debugpy = function()
+                return "python-debugpy"
+            end,
+        },
         default = function()
             return packageName
         end,
@@ -172,15 +177,16 @@ function m.packageInsert(packageName, sharedData, packageDataBase)
             end
         end,
         arch = function()
-            if m.ifPackageExistInRepos(packageName, "pacman") then
-                table.insert(sharedData.pacmanPackages, packageName)
+            local packageAltName = m.nameSubstitute(packageName, "arch")
+            if m.ifPackageExistInRepos(packageAltName, "pacman") then
+                table.insert(sharedData.pacmanPackages, packageAltName)
                 lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { pacman = true } } })
                 return true
             else
                 --FIXME: don't do that, set sharedValue and use that
                 sharedData.aurHelper = m.setAurHelper()
-                if sharedData.aurHelper ~= "" and m.ifPackageExistInRepos(packageName, sharedData.aurHelper) then
-                    table.insert(sharedData.aurPackages, packageName)
+                if sharedData.aurHelper ~= "" and m.ifPackageExistInRepos(packageAltName, sharedData.aurHelper) then
+                    table.insert(sharedData.aurPackages, packageAltName)
                     lowLevel.tableUpdate(packageDataBase, { [packageName] = { installers = { aur = true } } })
                     return true
                 end
